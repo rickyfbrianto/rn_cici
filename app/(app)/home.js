@@ -1,17 +1,25 @@
 import { View, Text, Button } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useAuth } from '../../context/authContext'
 
 const Home = () => {
-    const { logout } = useAuth()
+    const [loading, setLoading] = useState(false)
+    const { logout, user } = useAuth()
     const handleLogout = async () => {
-        await logout()
+        setLoading(true)
+        setTimeout(async () => {
+            await logout()
+            setLoading(false)
+        }, 1000)
     }
 
     return (
-        <View>
-            <Text>Home</Text>
-            <Button title='Logout' onPress={() => handleLogout()} />
+        <View className="flex-1 items-center justify-center">
+            <Text className="mb-5">Hello {user.username} </Text>
+            {loading
+                ? <Text>Anda akan dikeluarkan dari halaman ini</Text>
+                : <Button title='Logout' onPress={() => handleLogout()} />
+            }
         </View>
     )
 }

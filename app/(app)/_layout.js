@@ -4,7 +4,9 @@ import { Stack } from 'expo-router'
 
 const _layout = () => {
     return (
-        <Stack />
+        <Stack>
+            <Stack.Screen name="home" options={{ headerTitle: "Homepage" }} />
+        </Stack>
     )
 }
 

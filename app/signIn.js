@@ -6,19 +6,29 @@ import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Loading from '../components/Loading';
 import CustomKeyboard from '../components/CustomKeyboard';
+import { useAuth } from '../context/authContext';
 
 const SignIn = () => {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
+    const { login } = useAuth()
     const input = useRef({
         email: "",
         password: ""
     })
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!input.current.email || !input.current.password) {
             Alert.alert("Sign In", "Please fill on all the fields")
             return
+        }
+
+        setLoading(true)
+        const response = await login(input.current.email, input.current.password)
+        setLoading(false)
+
+        if (!response.success) {
+            Alert.alert("Login", response.msg)
         }
 
         // Login process
@@ -34,16 +44,20 @@ const SignIn = () => {
                     </View>
 
                     <View className="gap-4">
-                        <Text style={{ fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-700">Sign In</Text>
-                        <View style={{ height: hp(7) }} className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-2xl">
-                            <Octicons name="mail" size={24} color="gray" />
-                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-700" placeholder='Email Address' placeholderTextColor={'gray'} />
+                        <Text style={{ fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-700">Masuk</Text>
+                        <View style={{ height: hp(7) }} className="flex-row gap-x-3 px-2 bg-neutral-100 items-center rounded-2xl">
+                            <View className="w-[40px] flex-row justify-center">
+                                <Octicons name="mail" size={24} color="gray" />
+                            </View>
+                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-700" placeholder='Alamat email' placeholderTextColor={'gray'} />
                         </View>
-                        <View style={{ height: hp(7) }} className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-2xl">
-                            <Octicons name="lock" size={24} color="gray" />
+                        <View style={{ height: hp(7) }} className="flex-row gap-x-3 px-2 bg-neutral-100 items-center rounded-2xl">
+                            <View className="w-[40px] flex-row justify-center">
+                                <Octicons name="lock" size={24} color="gray" />
+                            </View>
                             <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.password = val} className="flex-1 font-semibold text-neutral-700" placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={true} />
                         </View>
-                        <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-right text-neutral-500">Forgot Password?</Text>
+                        <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-right text-neutral-500">Lupa Password?</Text>
 
                         <View>
                             {loading ?
@@ -53,16 +67,16 @@ const SignIn = () => {
                                     </View>
                                 </>
                                 :
-                                <TouchableOpacity onPress={handleLogin} style={{ height: hp(7) }} className="bg-indigo-500 justify-center items-center rounded-xl">
-                                    <Text style={{ fontSize: hp(3) }} className="text-white font-bold tracking-wider">Sign In</Text>
+                                <TouchableOpacity onPress={handleLogin} style={{ height: hp(7) }} className="bg-teal-600 justify-center items-center rounded-xl">
+                                    <Text style={{ fontSize: hp(3) }} className="text-white font-bold tracking-wider">Masuk</Text>
                                 </TouchableOpacity>
                             }
                         </View>
 
-                        <View className="flex-row justify-center gap-x-2">
-                            <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Dont have an account?</Text>
+                        <View className="flex-row justify-center gap-x-1">
+                            <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Tidak punya akun?</Text>
                             <Pressable onPress={() => router.push("signUp")}>
-                                <Text style={{ fontSize: hp(1.8) }} className="font-bold text-indigo-500">Sign Up</Text>
+                                <Text style={{ fontSize: hp(1.8) }} className="font-bold text-teal-600">Daftar sekarang</Text>
                             </Pressable>
                         </View>
                     </View>

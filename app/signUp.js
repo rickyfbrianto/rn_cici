@@ -29,12 +29,9 @@ const SignUp = () => {
         let response = await register(input.current.email, input.current.password, input.current.username)
         setLoading(false)
 
-        console.log('result', response);
         if (!response.success) {
             Alert.alert("Sign Up", response.msg)
         }
-
-        // Login process
     }
 
     return (
@@ -47,7 +44,7 @@ const SignUp = () => {
                     </View>
 
                     <View className="gap-4">
-                        <Text style={{ fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-700">Register</Text>
+                        <Text style={{ fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-700">Daftar</Text>
                         <View style={{ height: hp(7) }} className="flex-row gap-x-3 px-2 bg-neutral-100 items-center rounded-2xl">
                             <View className="w-[40px] flex-row justify-center">
                                 <Feather name="user" size={24} color="gray" />
@@ -58,7 +55,7 @@ const SignUp = () => {
                             <View className="w-[40px] flex-row justify-center">
                                 <Octicons name="mail" size={24} color="gray" />
                             </View>
-                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-700" placeholder='Email Address' placeholderTextColor={'gray'} />
+                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-700" placeholder='Email' placeholderTextColor={'gray'} />
                         </View>
                         <View style={{ height: hp(7) }} className="flex-row gap-x-3 px-2 bg-neutral-100 items-center rounded-2xl">
                             <View className="w-[40px] flex-row justify-center">
@@ -75,15 +72,15 @@ const SignUp = () => {
                                 </>
                                 :
                                 <TouchableOpacity onPress={handleRegister} style={{ height: hp(7) }} className="bg-indigo-500 justify-center items-center rounded-xl">
-                                    <Text style={{ fontSize: hp(3) }} className="text-white font-bold tracking-wider">Register</Text>
+                                    <Text style={{ fontSize: hp(3) }} className="text-white font-bold tracking-wider">Daftar Akun</Text>
                                 </TouchableOpacity>
                             }
                         </View>
 
-                        <View className="flex-row justify-center gap-x-2">
-                            <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Already have an account?</Text>
+                        <View className="flex-row justify-center gap-x-1">
+                            <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Sudah punya akun?</Text>
                             <Pressable onPress={() => router.push("signIn")}>
-                                <Text style={{ fontSize: hp(1.8) }} className="font-bold text-indigo-500">Sign In</Text>
+                                <Text style={{ fontSize: hp(1.8) }} className="font-bold text-indigo-500">Masuk</Text>
                             </Pressable>
                         </View>
                     </View>
