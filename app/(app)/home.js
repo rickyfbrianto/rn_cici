@@ -1,26 +1,29 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useState } from 'react'
-import { useAuth } from '../../context/authContext'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import KategoriFilter from '../../components/KategoriFilter'
+import IbadahCard from '../../components/IbadahCard'
 
 const Home = () => {
-    const [loading, setLoading] = useState(false)
-    const { logout, user } = useAuth()
-    const handleLogout = async () => {
-        setLoading(true)
-        setTimeout(async () => {
-            await logout()
-            setLoading(false)
-        }, 1000)
-    }
+    const [users, setUsers] = useState([])
 
     return (
-        <View className="flex-1 items-center justify-center">
-            <Text className="mb-5">Hello {user.username} </Text>
-            {loading
-                ? <Text>Anda akan dikeluarkan dari halaman ini</Text>
-                : <Button title='Logout' onPress={() => handleLogout()} />
-            }
-        </View>
+        <View className="" style={{paddingHorizontal:hp(2), marginTop:hp(2), flex:1}}>
+            {/* <StatusBar style='light'>
+                {users.length > 0 ? (
+                    <View className=""></View>
+                ) : (
+                    <View className="flex items-center" style={{ top: hp(30) }}>
+
+                    </View>
+                )}
+            </StatusBar > */}    
+            <KategoriFilter/>
+            <View style={{flex:1}}>
+                <Text style={{fontFamily:"outfit", fontSize:hp(3), fontWeight:"bold"}}>Jadwal Ibadah</Text> 
+                <IbadahCard/>
+            </View>
+        </View >
     )
 }
 
