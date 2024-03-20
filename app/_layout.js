@@ -4,6 +4,13 @@ import { AuthContextProvider, useAuth } from "../context/authContext"
 import { MenuProvider } from 'react-native-popup-menu';
 import { useFonts } from 'expo-font';
 import "../global.css"
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query'
 
 const MainLayout = () => {
     const { isAuthenticated } = useAuth()
@@ -15,7 +22,7 @@ const MainLayout = () => {
         'outfit': require('../assets/fonts/Outfit-Regular.ttf'),
         'outfit-bold': require('../assets/fonts/Outfit-Bold.ttf'),
         'outfit-medium': require('../assets/fonts/Outfit-Medium.ttf'),
-      });
+    });
 
     useEffect(() => {
         if (typeof isAuthenticated == 'undefined') return
@@ -40,10 +47,14 @@ const MainLayout = () => {
 }
 
 const RootLayout = () => {
+    const queryClient = new QueryClient()
+
     return (
         <MenuProvider>
             <AuthContextProvider>
-                <MainLayout/>
+                <QueryClientProvider client={queryClient}>
+                    <MainLayout />
+                </QueryClientProvider>
             </AuthContextProvider>
         </MenuProvider>
     )
