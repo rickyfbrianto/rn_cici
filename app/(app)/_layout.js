@@ -19,7 +19,8 @@ const AppLayout = () => {
             <Tabs.Screen name="home" options={{ header: () => <HomeHeader />, title: "Beranda", tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} /> }} />
             <Tabs.Screen name='berita' options={{ header: () => <BeritaHeader />, title: "Berita", tabBarIcon: ({ color }) => <FontAwesome size={28} name="newspaper-o" color={color} /> }} />
             
-            <Tabs.Screen name="ibadah" options={{ href:null, headerShown:false  }} />
+            <Tabs.Screen name="ibadah" options={{ href:null, headerShown:false, tabBarHideOnKeyboard:true, tabBarStyle:{display:"none"}  }} />
+            <Tabs.Screen name="nikah" options={{ href:null, headerShown:false, tabBarHideOnKeyboard:true, tabBarStyle:{display:"none"}  }} />
             <Tabs.Screen name="baptis" options={{ href:null, headerShown:false  }} />
             <Tabs.Screen name="user" options={{ href: null, }} />
         </Tabs>

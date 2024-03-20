@@ -4,7 +4,6 @@ import { AuthContextProvider, useAuth } from "../context/authContext"
 import { MenuProvider } from 'react-native-popup-menu';
 import { useFonts } from 'expo-font';
 import "../global.css"
-import { View } from "react-native";
 
 const MainLayout = () => {
     const { isAuthenticated } = useAuth()
@@ -12,6 +11,7 @@ const MainLayout = () => {
     const router = useRouter()
 
     const [fontsLoaded, fontError] = useFonts({
+        'geraldine': require('../assets/fonts/Geraldine.ttf'),
         'outfit': require('../assets/fonts/Outfit-Regular.ttf'),
         'outfit-bold': require('../assets/fonts/Outfit-Bold.ttf'),
         'outfit-medium': require('../assets/fonts/Outfit-Medium.ttf'),
@@ -43,7 +43,7 @@ const RootLayout = () => {
     return (
         <MenuProvider>
             <AuthContextProvider>
-                <MainLayout />
+                <MainLayout/>
             </AuthContextProvider>
         </MenuProvider>
     )

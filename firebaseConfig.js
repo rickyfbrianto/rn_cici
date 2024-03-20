@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
 export const auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage)
@@ -23,4 +23,6 @@ export const auth = initializeAuth(app, {
 export const db = getFirestore(app)
 
 export const usersRef = collection(db, "users")
-export const roomRef = collection(db, "rooms")
+export const ibadahCol = collection(db, "ibadah")
+export const nikahCol = collection(db, "nikah")
+export const baptisCol = collection(db, "baptis")

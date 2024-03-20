@@ -1,13 +1,12 @@
-import { View, Text, Image, TextInput, TouchableOpacity, Pressable, Alert } from 'react-native'
+import { View, Text, Image, TextInput, TouchableOpacity, Pressable, Alert, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { Octicons } from '@expo/vector-icons';
+import { Octicons, FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Loading from '../components/Loading';
 import CustomKeyboard from '../components/CustomKeyboard';
 import { useAuth } from '../context/authContext';
-import { FontAwesome } from '@expo/vector-icons';
+import { COLORS } from '../constants/Colors';
 
 const SignIn = () => {
     const router = useRouter()
@@ -46,58 +45,69 @@ const SignIn = () => {
 
     return (
         <CustomKeyboard>
-            <View className="flex-1 h-screen bg-white">
-                <StatusBar style='dark' />
+            <View className="bg-white" style={{flex:1}}>
                 <View style={{ paddingTop: hp(8), paddingHorizontal: wp(5) }} className="flex-1 gap-12">
                     <View className="items-center">
                         <Image style={{ height: hp(25) }} resizeMode='contain' source={require('../assets/images/signin.png')} />
                     </View>
 
-                    <View className="gap-4">
-                        <Text style={{ fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-500">Masuk</Text>
-                        <View style={{ height: hp(7) }} className="flex-row gap-x-3 px-5 bg-neutral-200 items-center rounded-2xl">
-                            <View className="w-[30px] flex-row justify-center">
+                    <View style={{rowGap:hp(2)}}>
+                        <Text style={{ fontFamily:"outfit", fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-500">Masuk</Text>
+                        <View style={{ flexDirection:"row", height: hp(7), backgroundColor:"whitesmoke", borderRadius:15, paddingHorizontal:hp(2), alignItems:"center", columnGap:wp(2) }}>
+                            <View style={{width:wp(10), alignItems:"center"}}>
                                 <Octicons name="mail" size={24} color="gray" />
                             </View>
                             <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-500" placeholder='Email' placeholderTextColor={'gray'} />
                         </View>
-                        <View style={{ height: hp(7) }} className="flex-row gap-x-3 px-5 bg-neutral-200 items-center rounded-2xl">
-                            <View className="w-[30px] flex-row justify-center">
+                        <View style={{ flexDirection:"row", height: hp(7), backgroundColor:"whitesmoke", borderRadius:15, paddingHorizontal:hp(2), alignItems:"center", columnGap:wp(2) }}>
+                            <View style={{width:wp(10), alignItems:"center"}}>
                                 <Octicons name="lock" size={24} color="gray" />
                             </View>
                             <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.password = val} className="flex-1 font-semibold text-neutral-500" placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={form.password} />
                             <FontAwesome name={form.password ? "eye" :"eye-slash"} size={24} color={form.password ? "green" : "gray"} onPress={()=>setForm(prev=>({...prev, password:!prev.password}))}/>
                         </View>
-                        <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-right text-neutral-500">Lupa Password?</Text>
+                        {/* <Text style={{fontFamily:"outfit-bold", fontSize: hp(1.8) }} className="font-semibold text-right text-neutral-500">Lupa Password?</Text> */}
 
                         <View>
                             {form.loading ? 
+                                <View style={{flexDirection:"row", justifyContent:"center"}}>
+                                    <ActivityIndicator size='large' color={COLORS.INDIGO} />
+                                </View>
+                                :
                                 <>
-                                    <View className="flex-row justify-center">
-                                        <Loading size={hp(8)} />
+                                    <TouchableOpacity onPress={handleLogin} style={{ justifyContent:"center", alignItems:"center", height: hp(7), backgroundColor: COLORS.TEAL }} className="rounded-xl">
+                                        <Text style={{ fontFamily:"outfit", fontSize: hp(3) }} className="text-white font-bold tracking-wider">Masuk</Text>
+                                    </TouchableOpacity>
+                                    <View style={{marginTop:hp(2), flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
+                                        <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Tidak punya akun?</Text>
+                                        <Pressable onPress={() => router.push("signUp")}>
+                                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.TEAL }}>Daftar sekarang</Text>
+                                        </Pressable>
+                                    </View>
+                                    <View style={{flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
+                                        <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Atau kembali ke</Text>
+                                        <Pressable onPress={() => router.push("home")}>
+                                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.RED }}>Home</Text>
+                                        </Pressable>
                                     </View>
                                 </>
-                                :
-                                <TouchableOpacity onPress={handleLogin} style={{ height: hp(7) }} className="bg-teal-500 justify-center items-center rounded-xl">
-                                    <Text style={{ fontSize: hp(3) }} className="text-white font-bold tracking-wider">Masuk</Text>
-                                </TouchableOpacity>
                             }
                         </View>
 
-                        <View className="flex-col">
-                            <View className="flex-row justify-center gap-x-1">
-                                <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Tidak punya akun?</Text>
+                        {/* <View className="flex-col">
+                            <View style={{flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
+                                <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Tidak punya akun?</Text>
                                 <Pressable onPress={() => router.push("signUp")}>
-                                    <Text style={{ fontSize: hp(1.8) }} className="font-bold text-teal-600">Daftar sekarang</Text>
+                                    <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.TEAL }}>Daftar sekarang</Text>
                                 </Pressable>
                             </View>
-                            <View style={{ marginTop: hp(1) }} className="flex-row justify-center gap-x-1">
-                                <Text style={{ fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Atau kembali ke</Text>
+                            <View style={{flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
+                                <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Atau kembali ke</Text>
                                 <Pressable onPress={() => router.push("home")}>
-                                    <Text style={{ fontSize: hp(1.8) }} className="font-bold text-red-600">Home</Text>
+                                    <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.RED }}>Home</Text>
                                 </Pressable>
                             </View>
-                        </View>
+                        </View> */}
                     </View>
                 </View>
             </View>
