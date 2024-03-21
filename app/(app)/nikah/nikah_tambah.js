@@ -1,21 +1,23 @@
 import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../constants/Colors';
-import { Divider } from '@rneui/themed';
-import CustomKeyboard from '../../../components/CustomKeyboard';
-import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
+import CustomKeyboard from '../../../components/CustomKeyboard';
+import { Hari } from '../../../constants/Constant';
+import { doc, setDoc } from 'firebase/firestore';
+import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Hari } from '../../../constants/Constant';
 
 const IbadahTambah = () => {
-    const { control, reset, handleSubmit, formState: { errors, isSubmitting }, getValues } = useForm()
+    const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({defaultValues:{
+        pria:null, wanita:null, hari:null, tanggal:null, jam:null, pdt:null, lokasi:null
+    }})
     const [DTPicker, setDTPicker] = useState({
-        hari: false,
+        tanggal: false,
         jam: false,
     })
 
@@ -38,17 +40,19 @@ const IbadahTambah = () => {
     const handleHari = (event, selectedDate) => {
         const currentDate = selectedDate || new Date()
         let tempDate = new Date(currentDate)
-        let fDate = Hari[tempDate.getDay()] + ", " + tempDate.getUTCFullYear() + "-" + ('0' + (tempDate.getMonth() + 1)).slice(-2) + "-" + ('0' + tempDate.getDate()).slice(-2)
-        setDTPicker(prev => ({ ...prev, hari: false }))
-        reset(d => ({ ...d, hari: fDate }))
+        let fDate = tempDate.getUTCFullYear() + "-" + ('0' + (tempDate.getMonth() + 1)).slice(-2) + "-" + ('0' + tempDate.getDate()).slice(-2)
+        let fDay = Hari[tempDate.getDay()]
+        setDTPicker(prev => ({ ...prev, tanggal: false }))
+        setValue("tanggal", fDate)
+        setValue("hari", fDay)
     }
 
     const handleJam = (event, selectedDate) => {
         const currentDate = selectedDate || new Date()
         let tempDate = new Date(currentDate)
-        let fTime = ('0' + tempDate.getHours()).slice(-2) + "-" + ('0' + tempDate.getMinutes()).slice(-2)
+        let fTime = ('0' + tempDate.getHours()).slice(-2) + "." + ('0' + tempDate.getMinutes()).slice(-2)
         setDTPicker(prev => ({ ...prev, jam: false }))
-        reset(d => ({ ...d, jam: fTime }))
+        setValue("jam", fTime)
     }
 
     return (
@@ -57,8 +61,6 @@ const IbadahTambah = () => {
             <View style={{ padding: 20, rowGap: 10 }} >
                 <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan jadwal nikah</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
-                {/* RN */}
-
 
                 <View style={{ flexDirection: "row", borderWidth: errors.pria ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
@@ -78,28 +80,30 @@ const IbadahTambah = () => {
                     )} />
                     {errors?.wanita && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
-                <Pressable onPress={() => setDTPicker(prev => ({ ...prev, hari: true }))} style={{ flexDirection: "row", borderWidth: errors.hari ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+                <Pressable onPress={() => setDTPicker(prev => ({ ...prev, tanggal: true }))} style={{ flexDirection: "row", borderWidth: errors.tanggal ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
                         <FontAwesome name="calendar-o" size={24} color="gray" />
                     </View>
-                    <Controller control={control} name='hari' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
+                    <Controller control={control} name='hari' rules={{ required: { value: true } }} render={({ field }) => (
+                        <TextInput style={{ fontSize: hp(2)}} editable={false} {...field} className="font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
+                    )} />
+                    <Controller control={control} name='tanggal' rules={{ required: { value: true } }} render={({ field, fieldState }) => (
                         <View>
-                            {DTPicker.hari && <DateTimePicker mode='date' value={new Date()} display='default' onChange={handleHari} />}
-                            <TextInput style={{ fontSize: hp(2) }} value={value}
-                                onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
+                            {DTPicker.tanggal && <DateTimePicker mode='date' value={new Date()} display='default' onChange={handleHari} />}
+                            <TextInput style={{ fontSize: hp(2), flex:1 }} {...field} className="flex-1 w-full font-semibold text-neutral-500" placeholder='Tanggal' placeholderTextColor={'gray'} />
                         </View>
                     )} />
-                    {errors?.hari && <FontAwesome name="exclamation" size={24} color="red" />}
+                    {errors?.tanggal && <FontAwesome name="exclamation" size={24} color="red" />}
                 </Pressable>
                 <Pressable onPress={() => setDTPicker(prev => ({ ...prev, jam: true }))} style={{ flexDirection: "row", borderWidth: errors.jam ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
                         <FontAwesome name="clock-o" size={24} color="gray" />
                     </View>
-                    <Controller control={control} name='jam' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
+                    <Controller control={control} name='jam' rules={{ required: { value: true } }} render={({ field: { onChange, value } }) => (
                         <View>
                             {DTPicker.jam && <DateTimePicker mode='time' is24Hour={true} value={new Date()} display='default' onChange={handleJam} />}
                             <TextInput style={{ fontSize: hp(2) }} value={value}
-                                onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
+                                onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
                         </View>
                     )} />
                     {errors?.jam && <FontAwesome name="exclamation" size={24} color="red" />}

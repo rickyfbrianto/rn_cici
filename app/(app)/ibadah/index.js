@@ -28,11 +28,11 @@ const index = () => {
 
     return (
         <>
-            <View className="flex-1 bg-teal-500 p-5" style={{ padding: 10 }}>
+            <View className="flex-1 bg-teal-500 p-5" style={{ padding: 10, flex:1 }}>
                 <Text style={{ fontSize: hp(3), fontWeight: "bold" }}>Daftar</Text>
                 {ibadahQuery.isLoading
                     ? <Text>Loading</Text>
-                    : <IbadahCard data={ibadahQuery.data} />
+                    : <IbadahCard data={ibadahQuery.data}/>
                 }
             </View>
             <SpeedDial

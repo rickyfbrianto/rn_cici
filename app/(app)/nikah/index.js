@@ -1,12 +1,11 @@
 import { View, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { COLORS } from '../../../constants/Colors'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { router } from 'expo-router'
 import { SpeedDial } from '@rneui/themed';
-import { getDocs } from 'firebase/firestore'
+import { getDocs, orderBy, query } from 'firebase/firestore'
 import { nikahCol } from '../../../firebaseConfig'
-import { FontAwesome, Feather } from '@expo/vector-icons';
 import NikahCard from '../../../components/NikahCard'
 import { useQuery } from '@tanstack/react-query'
 
@@ -16,20 +15,22 @@ const index = () => {
     });
 
     const nikahQuery = useQuery({
-        queryKey: ['nikah'],
+        queryKey: ['nikahList'],
         queryFn: async () => {
-            const querySnap = await getDocs(nikahCol)
+            const queryRef = query(nikahCol, orderBy("tanggal"))
+            const querySnap = await getDocs(queryRef)
             let temp = []
             querySnap.forEach(v => {
                 temp.push({ ...v.data(), id: v?.id })
             })
+            console.log(temp);
             return temp
         },
     })
 
     return (
         <>
-            <View className="flex-1 bg-teal-500 p-5" style={{ padding: 10 }}>
+            <View className="bg-teal-500 p-5" style={{ padding: 10, flex:1 }}>
                 <Text style={{ fontSize: hp(3), fontWeight: "bold" }}>Daftar</Text>
                 {nikahQuery.isLoading
                     ? <Text>Loading</Text>

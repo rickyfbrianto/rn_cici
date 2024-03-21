@@ -18,7 +18,7 @@ const MainLayout = () => {
     const router = useRouter()
 
     const [fontsLoaded, fontError] = useFonts({
-        'geraldine': require('../assets/fonts/Geraldine.ttf'),
+        'wedding': require('../assets/fonts/Stylish.ttf'),
         'outfit': require('../assets/fonts/Outfit-Regular.ttf'),
         'outfit-bold': require('../assets/fonts/Outfit-Bold.ttf'),
         'outfit-medium': require('../assets/fonts/Outfit-Medium.ttf'),

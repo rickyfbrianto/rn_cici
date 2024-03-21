@@ -9,7 +9,6 @@ import { MenuItem } from './CustomMenuItems';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
-import { COLORS } from '../constants/Colors';
 
 const ios = Platform.OS == "ios"
 

@@ -2,11 +2,18 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "app/*",
+        "constants/*",
+        "components/*",
+      ]
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "constants/Colors.js"  ]
+    "constants/*", 
+    "app/(app)/nikah/nikah_tambah.js"  ]
 }

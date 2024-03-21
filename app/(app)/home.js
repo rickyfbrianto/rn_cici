@@ -27,7 +27,7 @@ const Home = () => {
                 <Text style={{ fontFamily: "outfit", fontSize: hp(3), fontWeight: "bold" }}>Jadwal Ibadah</Text>
                 {ibadahQuery.isLoading
                     ? <Text>Mengambil data ibadah...</Text>
-                    : <IbadahCard data={ibadahQuery.data} />
+                    : <IbadahCard/>
                 }
             </View>
         </View >
