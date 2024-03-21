@@ -39,19 +39,17 @@ const SignIn = () => {
         if (!response.success) {
             Alert.alert("Login", response.msg)
         }
-
-        // Login process
     }
 
     return (
         <CustomKeyboard>
             <View className="bg-white" style={{ flex: 1 }}>
-                <View style={{ paddingTop: hp(8), paddingHorizontal: wp(5) }} className="flex-1 gap-12">
+                <View style={{ paddingTop: hp(8), paddingHorizontal: wp(5), flex:1 }} className="gap-12">
                     <View className="items-center">
                         <Image style={{ height: hp(25) }} resizeMode='contain' source={require('../assets/images/signin.png')} />
                     </View>
 
-                    <View style={{ rowGap: hp(2) }}>
+                    <View style={{ rowGap: hp(2), flex:1 }}>
                         <Text style={{ fontFamily: "outfit", fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-500">Masuk</Text>
                         <View style={{ flexDirection: "row", height: hp(7), backgroundColor: "whitesmoke", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                             <View style={{ width: wp(10), alignItems: "center" }}>

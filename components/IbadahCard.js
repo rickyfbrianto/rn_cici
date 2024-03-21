@@ -7,36 +7,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import NoData from './NoData'
 import {ConvertDataToSection} from '../constants/Function'
+import { ibadahCol } from '../firebaseConfig'
+import { getDocs, limit, orderBy, query } from 'firebase/firestore'
 
-const IbadahCard = () => {
+const IbadahCard = ({batas}) => {
     const [refresh, setRefresh] = useState(false)
-    const [data, setData] = useState([])
-    const queryClient = useQueryClient()
+    const [data, setData]= useState([])
     
     const dataQuery = useQuery({
-        queryKey: ['ibadah'],
+        queryKey: ['ibadahList'],
         queryFn: async () => {
-            const querySnap = await getDocs(ibadahCol)
+            const queryRef = query(ibadahCol, orderBy("tanggal"), batas ? limit(batas):null)
+            const querySnap = await getDocs(queryRef)
             let temp = []
             querySnap.forEach(v => {
                 temp.push({ ...v.data(), id: v?.id })
             })
+            // setData(temp)
             return temp
         },
-        refetchInterval:100
     })
-
-    useEffect(()=>{
-        (async()=>{
-            setData(ConvertDataToSection(dataQuery.data))
-        })()
-    }, [dataQuery.isSuccess])
             
     const handleRefresh = () =>{
         setRefresh(true)
         setTimeout(()=>{
-            // dataQuery.refetch()
-            queryClient.invalidateQueries({queryKey:['ibadah']})
+            dataQuery.refetch()
             setRefresh(false)
         }, 50)
     }
@@ -51,7 +46,7 @@ const IbadahCard = () => {
             :   
                 <>
                     {dataQuery.data.length > 0  
-                    ?   <SectionList sections={data} showsVerticalScrollIndicator={false} keyExtractor={(item,index) => item+index} 
+                    ?   <SectionList sections={ConvertDataToSection(dataQuery.data)} showsVerticalScrollIndicator={false} keyExtractor={(item,index) => item+index} 
                         refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh}/>}
                             renderItem={({item, index}) => (
                                 <Pressable onPress={()=>{router.push(`ibadah/${item.id}`)}} key={index} className="flex-row items-center gap-x-3 my-2 bg-white p-3 rounded-3xl">
@@ -72,7 +67,10 @@ const IbadahCard = () => {
                                 </View>
                             )}
                         />
-                    :   <NoData pesan={"Tidak ada data"} />
+                    :   
+                        <Pressable onPress={handleRefresh}>
+                            <Text>Klik untuk refresh</Text>
+                        </Pressable>
                     }
                 </>
             }

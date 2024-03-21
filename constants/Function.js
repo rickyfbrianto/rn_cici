@@ -11,3 +11,13 @@ export const ConvertDataToSection = (val) =>{
     }, []);
     return tempData
 }
+
+function getQueryKey(){
+    const queryClient = useQueryClient()
+
+    const queryCache = queryClient.getQueryCache()
+    const queryKeys = queryCache.getAll().map(cache => {
+        console.log(cache.queryKey);
+        cache.queryKey
+    })
+}

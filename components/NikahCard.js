@@ -1,28 +1,38 @@
-import { View, Text, Pressable, SectionList, ActivityIndicator } from 'react-native'
-import React from 'react'
+import { View, Text, Pressable, SectionList, ActivityIndicator, RefreshControl } from 'react-native'
+import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { router } from 'expo-router'
 import { COLORS } from '../constants/Colors'
 import { Ionicons, EvilIcons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query'
 import NoData from './NoData'
+import { ConvertDataToSection } from '../constants/Function'
+import { getDocs, orderBy, query } from 'firebase/firestore'
+import { nikahCol } from '../firebaseConfig' 
 
-const NikahCard = ({ data }) => {
+const NikahCard = ({limit}) => {
+    const [refresh, setRefresh] = useState(false)
+
     const dataQuery = useQuery({
-        queryKey: ['nikahCard'],
+        queryKey: ['nikahList'],
         queryFn: async () => {
-            let tempData = data?.reduce((accum, current) => {
-                let dateGroup = accum.find(x => x.tanggal === current.tanggal);
-                if (!dateGroup) {
-                    dateGroup = { tanggal: current.tanggal , data: [] }
-                    accum.push(dateGroup);
-                }
-                dateGroup.data.push(current);
-                return accum;
-            }, []);
-            return tempData
+            const queryRef = query(nikahCol, orderBy("tanggal"))
+            const querySnap = await getDocs(queryRef)
+            let temp = []
+            querySnap.forEach(v => {
+                temp.push({ ...v.data(), id: v?.id })
+            })
+            return temp
         },
     })
+
+    const handleRefresh = () =>{
+        setRefresh(true)
+        setTimeout(()=>{
+            dataQuery.refetch()
+            setRefresh(false)
+        }, 50)
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -34,7 +44,8 @@ const NikahCard = ({ data }) => {
             :
             <>
                 {dataQuery.data.length > 0 
-                ?   <SectionList sections={dataQuery.data} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
+                ?   <SectionList sections={ConvertDataToSection( dataQuery.data)} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
+                    refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh}/>}
                         renderItem={({ item, index }) => (
                             <Pressable onPress={() => { router.push(`nikah/${item.id}`) }} key={index} className={`flex-row justify-between items-center gap-x-3 my-2 bg-slate-200 p-5 rounded-3xl`}>
                                 <View style={{ flexDirection: "column", rowGap: hp(1) }}>

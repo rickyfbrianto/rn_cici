@@ -13,15 +13,9 @@ import { useQuery } from '@tanstack/react-query'
 const IbadahDetail = () => {
     const {id} = useLocalSearchParams()
     const {top} = useSafeAreaInsets()
-
-    useEffect(()=>{
-        (async () =>
-            dataQuery.refetch()
-        )()
-    }, [id])
     
     const dataQuery = useQuery({
-        queryKey: ['ibadahDetail'],
+        queryKey: ['ibadahDetail', id],
         queryFn: async () => {
             const ref = doc(db, "ibadah", id);
             const dataSnap = await getDoc(ref)
