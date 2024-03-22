@@ -2,7 +2,8 @@ import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import KategoriFilter from '../../components/KategoriFilter'
-import IbadahCard from '../../components/IbadahCard'
+import CardIbadah from '../../components/CardIbadah'
+import { COLORS } from '../../constants/Colors'
 
 const Home = () => {    
     return (
@@ -10,7 +11,7 @@ const Home = () => {
             <KategoriFilter />
             <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: "outfit", fontSize: hp(3), fontWeight: "bold" }}>Jadwal Ibadah</Text>
-                <IbadahCard batas={3} />
+                <CardIbadah batas={3} style={{backgroundColor:COLORS.PRIMARY}}/>
             </View>
         </View >
     )

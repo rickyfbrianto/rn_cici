@@ -1,3 +1,5 @@
+import {useQueryClient} from '@tanstack/react-query'
+
 export const ConvertDataToSection = (val) =>{
     let tempData = val.reduce((accum, current) => {
         // let dateGroup = accum.find(x => x.tanggal === current.tanggal);
@@ -12,7 +14,7 @@ export const ConvertDataToSection = (val) =>{
     return tempData
 }
 
-function getQueryKey(){
+export function getQueryKey(){
     const queryClient = useQueryClient()
 
     const queryCache = queryClient.getQueryCache()

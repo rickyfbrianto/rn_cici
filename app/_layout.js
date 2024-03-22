@@ -4,13 +4,8 @@ import { AuthContextProvider, useAuth } from "../context/authContext"
 import { MenuProvider } from 'react-native-popup-menu';
 import { useFonts } from 'expo-font';
 import "../global.css"
-import {
-    useQuery,
-    useMutation,
-    useQueryClient,
-    QueryClient,
-    QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {Root as PopupRootProvider} from 'react-native-popup-confirm-toast';
 
 const MainLayout = () => {
     const { isAuthenticated } = useAuth()
@@ -32,7 +27,10 @@ const MainLayout = () => {
         // } else if (!isAuthenticated) {
         //     router.replace('signIn')
         // }
-        router.replace('home')
+        // router.replace('home')
+        setTimeout(()=>{
+            router.replace('home')
+        }, 3000)
     }, [isAuthenticated])
 
     // return <Slot />
@@ -53,7 +51,9 @@ const RootLayout = () => {
         <MenuProvider>
             <AuthContextProvider>
                 <QueryClientProvider client={queryClient}>
-                    <MainLayout />
+                    <PopupRootProvider>
+                        <MainLayout />
+                    </PopupRootProvider>
                 </QueryClientProvider>
             </AuthContextProvider>
         </MenuProvider>

@@ -1,4 +1,4 @@
-import { View, Text, Platform } from 'react-native'
+import { View, Text, Platform, Pressable } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -8,7 +8,7 @@ import { useAuth } from '../context/authContext';
 import { MenuItem } from './CustomMenuItems';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 
 const ios = Platform.OS == "ios"
 
@@ -60,14 +60,14 @@ export default HomeHeader = () => {
 
     const BelumLogin = () =>{
         return (
-            <View>
-                <Link style={{ backgroundColor: "white", paddingHorizontal: hp(2), paddingVertical: hp(1) }} href={"signIn"}>Sign In</Link>
-            </View>
+            <Pressable onPress={()=>router.replace("signIn")} style={{borderRadius:20, backgroundColor:"white", paddingVertical:hp(1), paddingHorizontal:wp(5)}}>
+                <MaterialIcons name="login" size={24} color="black" />
+            </Pressable>
         )
     }
     
     return (
-        <View style={{ paddingTop: top }} className={`flex-row justify-between items-center rounded-b-3xl px-5 pb-3 h-[120px] bg-[#4682b4]`}>
+        <View style={{ paddingTop: top, borderBottomLeftRadius:50, borderBottomRightRadius:50 }} className={`justify-center items-start px-5 h-[120px] bg-[#4682b4]`}>
             {user ? <SudahLogin/> : <BelumLogin/>}
         </View >
     )

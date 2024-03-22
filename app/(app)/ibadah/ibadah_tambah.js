@@ -76,7 +76,7 @@ const IbadahTambah = () => {
                         <MaterialIcons name="title" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='judul' rules={{required:{value:true}}} render={({field:{onChange, value, onBlur}}) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Judul Ibadah' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Judul Ibadah' placeholderTextColor={'gray'} />
                     )}/>
                     {errors?.judul && <FontAwesome name="exclamation" size={24} color="red" /> }
                 </View>
@@ -102,7 +102,7 @@ const IbadahTambah = () => {
                     <Controller control={control} name='jam' rules={{ required: { value: true } }} render={({ field: { onChange, value } }) => (
                         <View>
                             {DTPicker.jam && <DateTimePicker mode='time' is24Hour={true} value={new Date()} display='default' onChange={handleJam} />}
-                            <TextInput style={{ fontSize: hp(2) }} value={value}
+                            <TextInput style={{ flex:1, fontSize: hp(2) }} value={value}
                                 onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
                         </View>
                     )} />
@@ -113,7 +113,7 @@ const IbadahTambah = () => {
                         <FontAwesome name="user-o" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='pdt' rules={{required:{value:true}}} render={({field:{onChange, value, onBlur}}) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Pendeta' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Pendeta' placeholderTextColor={'gray'} />
                     )}/>
                     {errors?.pdt && <FontAwesome name="exclamation" size={24} color="red" /> }
                 </View>
@@ -122,7 +122,7 @@ const IbadahTambah = () => {
                         <FontAwesome name="location-arrow" size={24} color="gray" />   
                     </View>
                     <Controller control={control} name='lokasi' rules={{required:{value:true}}} render={({field:{onChange, value, onBlur}}) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
                     )}/>
                     {errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" /> }
                 </View>
@@ -133,8 +133,8 @@ const IbadahTambah = () => {
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent:"center", alignItems:"center", height: hp(7), backgroundColor: COLORS.TEAL }} className="rounded-xl">
-                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal</Text>
+                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
+                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Ibadah</Text>
                         </TouchableOpacity>
                     }
                 </View>

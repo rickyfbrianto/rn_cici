@@ -45,25 +45,25 @@ const SignUp = () => {
                         <Image style={{ height: hp(25) }} resizeMode='contain' source={require('../assets/images/signup.png')} />
                     </View>
 
-                    <View style={{rowGap:hp(2)}}>
+                    <View style={{ flex:1, rowGap:hp(2)}}>
                         <Text style={{ fontFamily:"outfit", fontSize: hp(4) }} className="font-bold tracking-wider text-neutral-500">Daftar</Text>
                         <View style={{ flexDirection:"row", height: hp(7), backgroundColor:"whitesmoke", borderRadius:15, paddingHorizontal:hp(2), alignItems:"center", columnGap:wp(2) }}>
                             <View style={{width:wp(10), alignItems:"center"}}>
                                 <Feather name="user" size={24} color="gray" />
                             </View>
-                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.username = val} className="flex-1 font-semibold text-neutral-700" placeholder='Username' placeholderTextColor={'gray'} />
+                            <TextInput style={{ flex:1, fontSize: hp(2) }} onChangeText={val => input.current.username = val} className="flex-1 font-semibold text-neutral-700" placeholder='Username' placeholderTextColor={'gray'} />
                         </View>
                         <View style={{ flexDirection:"row", height: hp(7), backgroundColor:"whitesmoke", borderRadius:15, paddingHorizontal:hp(2), alignItems:"center", columnGap:wp(2) }}>
                             <View style={{width:wp(10), alignItems:"center"}}>
                                 <Octicons name="mail" size={24} color="gray" />
                             </View>
-                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-700" placeholder='Email' placeholderTextColor={'gray'} />
+                            <TextInput style={{ flex:1, fontSize: hp(2) }} onChangeText={val => input.current.email = val} className="flex-1 font-semibold text-neutral-700" placeholder='Email' placeholderTextColor={'gray'} />
                         </View>
                         <View style={{ flexDirection:"row", height: hp(7), backgroundColor:"whitesmoke", borderRadius:15, paddingHorizontal:hp(2), alignItems:"center", columnGap:wp(2) }}>
                             <View style={{width:wp(10), alignItems:"center"}}>
                                 <Octicons name="lock" size={24} color="gray" />
                             </View>
-                            <TextInput style={{ fontSize: hp(2) }} onChangeText={val => input.current.password = val} className="flex-1 font-semibold text-neutral-700" placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={form.password} />
+                            <TextInput style={{ flex:1, fontSize: hp(2) }} onChangeText={val => input.current.password = val} className="flex-1 font-semibold text-neutral-700" placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={form.password} />
                             <FontAwesome name={form.password ? "eye" :"eye-slash"} size={24} color={form.password ? COLORS.INDIGO : "gray"} onPress={()=>setForm(prev=>({...prev, password:!prev.password}))}/>
                         </View>
                         
@@ -74,7 +74,7 @@ const SignUp = () => {
                                 </View>
                                 :
                                 <>
-                                    <TouchableOpacity onPress={handleRegister} style={{ height: hp(7), backgroundColor:COLORS.INDIGO, justifyContent:"center", alignItems:"center" }} className="rounded-xl">
+                                    <TouchableOpacity onPress={handleRegister} style={{ height: hp(7), backgroundColor:COLORS.INDIGO, justifyContent:"center", alignItems:"center", borderRadius:20 }}>
                                         <Text style={{ fontFamily:"outfit", fontSize: hp(3) }} className="text-white font-bold tracking-wider">Buat Akun</Text>
                                     </TouchableOpacity>
                                     <View style={{marginTop:hp(2), flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
@@ -86,27 +86,12 @@ const SignUp = () => {
                                     <View style={{flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
                                         <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Atau kembali ke</Text>
                                         <Pressable onPress={() => router.push("home")}>
-                                        <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.RED }}>Home</Text>
+                                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.RED }}>Home</Text>
                                         </Pressable>
                                     </View>
                                 </>
                             }
                         </View>
-
-                        {/* <View className="flex-col">
-                            <View style={{flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
-                                <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Sudah punya akun?</Text>
-                                <Pressable onPress={() => router.push("signIn")}>
-                                    <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.INDIGO }}>Masuk</Text>
-                                </Pressable>
-                            </View>
-                            <View style={{flexDirection:"row", justifyContent:"center", columnGap:wp(1)}}>
-                                <Text style={{ fontFamily:"outfit", fontSize: hp(1.8) }} className="font-semibold text-neutral-500">Atau kembali ke</Text>
-                                <Pressable onPress={() => router.push("home")}>
-                                <Text style={{ fontFamily:"outfit-bold", fontSize: hp(1.8), color:COLORS.RED }}>Home</Text>
-                                </Pressable>
-                            </View>
-                        </View> */}
                     </View>
                 </View>
             </View >

@@ -12,12 +12,13 @@ export const AyatNikah = [
     {ayat:"1 Petrus 4:8",desc:"Tetapi yang terutama: kasihilah sungguh-sungguh seorang akan yang lain, sebab kasih menutupi banyak sekali dosa."}
 ];
 
-export const Kategori = [
-    { id: 1, nama: "Ibadah", link: "ibadah" },
-    { id: 2, nama: "Pernikahan", link: "nikah" },
-    { id: 3, nama: "Pengumuman", link: "pengumuman" },
-    { id: 4, nama: "Baptisan", link: "baptis" },
-]
+export const Kategori = {
+    "ibadah": {  nama: "Ibadah", link: "ibadah", color:"#94a89a" },
+    "nikah": {  nama: "Pernikahan", link: "nikah", color:"#ce5374" },
+    "baptis": {  nama: "Baptisan", link: "baptis", color:"#1c5253" },
+    "pengumuman": {  nama: "Pengumuman", link: "pengumuman", color:"#374a67" },
+}
+
 
 export const ibadah_list = [
     { id: "001", hari: "Sabtu", jam: "18.00", pdt: "Philip", lokasi: "Gereja Tiberias" },

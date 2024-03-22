@@ -67,7 +67,7 @@ const IbadahTambah = () => {
                         <Ionicons name="man-sharp" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='pria' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama Pria' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama Pria' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.pria && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
@@ -76,7 +76,7 @@ const IbadahTambah = () => {
                         <Ionicons name="woman-sharp" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='wanita' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama Wanita' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama Wanita' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.wanita && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
@@ -90,7 +90,7 @@ const IbadahTambah = () => {
                     <Controller control={control} name='tanggal' rules={{ required: { value: true } }} render={({ field, fieldState }) => (
                         <View>
                             {DTPicker.tanggal && <DateTimePicker mode='date' value={new Date()} display='default' onChange={handleHari} />}
-                            <TextInput style={{ fontSize: hp(2), flex:1 }} {...field} className="flex-1 w-full font-semibold text-neutral-500" placeholder='Tanggal' placeholderTextColor={'gray'} />
+                            <TextInput style={{ flex:1, fontSize: hp(2) }} {...field} className="flex-1 w-full font-semibold text-neutral-500" placeholder='Tanggal' placeholderTextColor={'gray'} />
                         </View>
                     )} />
                     {errors?.tanggal && <FontAwesome name="exclamation" size={24} color="red" />}
@@ -102,36 +102,18 @@ const IbadahTambah = () => {
                     <Controller control={control} name='jam' rules={{ required: { value: true } }} render={({ field: { onChange, value } }) => (
                         <View>
                             {DTPicker.jam && <DateTimePicker mode='time' is24Hour={true} value={new Date()} display='default' onChange={handleJam} />}
-                            <TextInput style={{ fontSize: hp(2) }} value={value}
+                            <TextInput style={{ flex:1, fontSize: hp(2) }} value={value}
                                 onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
                         </View>
                     )} />
                     {errors?.jam && <FontAwesome name="exclamation" size={24} color="red" />}
                 </Pressable>
-                {/* <View style={{ flexDirection: "row", borderWidth: errors.hari ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
-                    <View style={{ width: wp(10), alignItems: "center" }}>
-                        <FontAwesome name="calendar-o" size={24} color="gray" />
-                    </View>
-                    <Controller control={control} name='hari' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
-                    )} />
-                    {errors?.hari && <FontAwesome name="exclamation" size={24} color="red" />}
-                </View> */}
-                {/* <View style={{ flexDirection: "row", borderWidth: errors.jam ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
-                    <View style={{ width: wp(10), alignItems: "center" }}>
-                        <FontAwesome name="clock-o" size={24} color="gray" />
-                    </View>
-                    <Controller control={control} name='jam' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
-                    )} />
-                    {errors?.jam && <FontAwesome name="exclamation" size={24} color="red" />}
-                </View> */}
                 <View style={{ flexDirection: "row", borderWidth: errors.pdt ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
                         <FontAwesome name="user-o" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='pdt' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Pendeta' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Pendeta' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.pdt && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
@@ -140,7 +122,7 @@ const IbadahTambah = () => {
                         <FontAwesome name="location-arrow" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='lokasi' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
@@ -151,7 +133,7 @@ const IbadahTambah = () => {
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL }} className="rounded-xl">
+                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
                             <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Nikah</Text>
                         </TouchableOpacity>
                     }

@@ -16,9 +16,9 @@ const IbadahDetail = () => {
     const [refresh, setRefresh] = useState(false)
 
     const dataQuery = useQuery({
-        queryKey: ['ibadahDetail', id],
+        queryKey: ['baptisDetail', id],
         queryFn: async () => {
-            const ref = doc(db, "ibadah", id);
+            const ref = doc(db, "baptis", id);
             const dataSnap = await getDoc(ref)
             return dataSnap.data()
         },
