@@ -12,7 +12,7 @@ import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const IbadahTambah = () => {
+const BaptisTambah = () => {
     const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
             hari: null, tanggal: null, jam: null, pdt: null, lokasi: null,
@@ -144,4 +144,4 @@ const IbadahTambah = () => {
     )
 }
 
-export default IbadahTambah
+export default BaptisTambah

@@ -10,7 +10,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../../firebaseConfig'
 import { useQuery } from '@tanstack/react-query'
 
-const IbadahDetail = () => {
+const BaptisDetail = () => {
     const { id } = useLocalSearchParams()
     const { top } = useSafeAreaInsets()
     const [refresh, setRefresh] = useState(false)
@@ -81,4 +81,4 @@ const IbadahDetail = () => {
     )
 }
 
-export default IbadahDetail
+export default BaptisDetail

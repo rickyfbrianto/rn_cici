@@ -2,43 +2,41 @@ import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator }
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen'
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { COLORS } from '../../../constants/Colors';
-import { Hari } from '../../../constants/Constant';
-import CustomKeyboard from '../../../components/CustomKeyboard';
-import { db } from '../../../firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { COLORS } from '../../../../constants/Colors';
+import { Hari } from '../../../../constants/Constant';
+import CustomKeyboard from '../../../../components/CustomKeyboard';
 import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { router, useLocalSearchParams } from 'expo-router'
+import {useQuery} from '@tanstack/react-query'
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../../firebaseConfig';
 
-const IbadahTambah = () => {
+const IbadahEdit = () => {
+    const { id_edit } = useLocalSearchParams()
+    const name = "ibadah"
     const {control, reset, handleSubmit, setValue, formState:{errors, isSubmitting}} = useForm({defaultValues:{
-        judul:null, hari:null, tanggal:null, jam:null, pdt:null, lokasi:null, 
+        judul:null, hari:null, tanggal:null, jam:null, pdt:null, lokasi:null
     }})
 
     const [DTPicker, setDTPicker] = useState({
         tanggal: false,
         jam: false,
     })
-
-    const handleAdd = async (data)=>{
-        try {
-            const id_ibadah = "IBD-" + Date.now()
-            // await addDoc(collection(db, "ibadah"), data)
-            await setDoc(doc(db, "ibadah", id_ibadah), data)
-            .then(()=>{
-                reset()
-                Toast.show({type: 'success', text1: 'Berhasil', text2: 'Jadwal ibadah berhasil ditambah'});
-            })
-            .catch(err=>{
-                Toast.show({type: 'error', text1: 'Gagal', text2: err.message});
-            })
-        } catch (error) {
-            Toast.show({type: 'error', text1: 'Gagal', text2: error.message});
+    
+    const dataQuery = useQuery({
+        queryKey:['ibadahEdit1', id_edit],
+        queryFn: async ()=>{
+            const queryRef = doc(db, "ibadah", id_edit)
+            const querySnap = await getDoc(queryRef)
+            const data = querySnap.data()
+            Object.keys(data).map(v=> setValue(v, data[v]))
+            return querySnap.data()
         }
-    }
-
+    })
+    
     const handleHari = (event, selectedDate) => {
         try {
             const currentDate = selectedDate || new Date()
@@ -62,6 +60,21 @@ const IbadahTambah = () => {
             setValue("jam", fTime)   
         } catch (error) {
             console.log(error.message);
+        }
+    }
+
+    const handleUpdate = async (data) => {
+        try {
+            const queryRef = doc(db, name, id_edit)
+            await updateDoc(queryRef, data)
+                .then(() => {
+                    Toast.show({ type: 'success', text1: 'Berhasil', text2: `Jadwal ${name} berhasil diubah`});
+                })
+                .catch(err => {
+                    Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
+                })
+        } catch (error) {
+            Toast.show({ type: 'error', text1: 'Gagal', text2: error.message });
         }
     }
     
@@ -132,8 +145,8 @@ const IbadahTambah = () => {
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
-                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Ibadah</Text>
+                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleUpdate)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
+                            <Text style={{ fontFamily:"outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Ubah jadwal {name}</Text>
                         </TouchableOpacity>
                     }
                 </View>
@@ -143,4 +156,4 @@ const IbadahTambah = () => {
     )
 }
 
-export default IbadahTambah
+export default IbadahEdit

@@ -1,33 +1,76 @@
 import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../../constants/Colors';
-import { db } from '../../../firebaseConfig';
-import CustomKeyboard from '../../../components/CustomKeyboard';
-import { Hari } from '../../../constants/Constant';
-import { doc, setDoc } from 'firebase/firestore';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { COLORS } from '../../../../constants/Colors';
+import { Hari } from '../../../../constants/Constant';
+import CustomKeyboard from '../../../../components/CustomKeyboard';
+import { db } from '../../../../firebaseConfig';
+import { doc, getDoc, query, updateDoc } from 'firebase/firestore';
 import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useQuery } from '@tanstack/react-query'
+import { useLocalSearchParams } from 'expo-router'
 
-const NikahTambah = () => {
-    const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({defaultValues:{
-        pria:null, wanita:null, hari:null, tanggal:null, jam:null, pdt:null, lokasi:null
-    }})
+const BaptisEdit = () => {
+    const { id_edit } = useLocalSearchParams()
+    const name = "baptis"
+    const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
+        defaultValues: {
+            hari: null, tanggal: null, jam: null, pdt: null, lokasi: null,
+        }
+    })
+
     const [DTPicker, setDTPicker] = useState({
         tanggal: false,
         jam: false,
     })
 
-    const handleAdd = async (data) => {
+    const dataQuery = useQuery({
+        queryKey:['baptisEdit', id_edit],
+        queryFn: async () =>{
+            const queryRef = doc(db, name, id_edit);
+            const dataSnap = await getDoc(queryRef)
+            const data = dataSnap.data()
+            Object.keys(data).map(v=> setValue(v, data[v]))
+            return data
+        }
+    })
+
+    const handleHari = (event, selectedDate) => {
         try {
-            const id_nikah = "NKH-" + Date.now()
-            await setDoc(doc(db, "nikah", id_nikah), data)
+            const currentDate = selectedDate || new Date()
+            let tempDate = new Date(currentDate)
+            let fDate = tempDate.getUTCFullYear() + "-" + ('0' + (tempDate.getMonth() + 1)).slice(-2) + "-" + ('0' + tempDate.getDate()).slice(-2)
+            let fDay = Hari[tempDate.getDay()]
+            setDTPicker(prev => ({ ...prev, tanggal: false }))
+            setValue("tanggal", fDate)
+            setValue("hari", fDay)
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const handleJam = (event, selectedDate) => {
+        try {
+            const currentDate = selectedDate || new Date()
+            let tempDate = new Date(currentDate)
+            let fTime = ('0' + tempDate.getHours()).slice(-2) + "." + ('0' + tempDate.getMinutes()).slice(-2)
+            setDTPicker(prev => ({ ...prev, jam: false }))
+            setValue("jam", fTime)
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const handleUpdate = async (data) => {
+        try {
+            const queryRef = doc(db, name, id_edit)
+            await updateDoc(queryRef, data)
                 .then(() => {
-                    reset()
-                    Toast.show({ type: 'success', text1: 'Berhasil', text2: 'Jadwal nikah berhasil ditambah' });
+                    Toast.show({ type: 'success', text1: 'Berhasil', text2: `Jadwal ${name} berhasil diubah`});
                 })
                 .catch(err => {
                     Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
@@ -37,60 +80,33 @@ const NikahTambah = () => {
         }
     }
 
-    const handleHari = (event, selectedDate) => {
-        const currentDate = selectedDate || new Date()
-        let tempDate = new Date(currentDate)
-        let fDate = tempDate.getUTCFullYear() + "-" + ('0' + (tempDate.getMonth() + 1)).slice(-2) + "-" + ('0' + tempDate.getDate()).slice(-2)
-        let fDay = Hari[tempDate.getDay()]
-        setDTPicker(prev => ({ ...prev, tanggal: false }))
-        setValue("tanggal", fDate)
-        setValue("hari", fDay)
-    }
-
-    const handleJam = (event, selectedDate) => {
-        const currentDate = selectedDate || new Date()
-        let tempDate = new Date(currentDate)
-        let fTime = ('0' + tempDate.getHours()).slice(-2) + "." + ('0' + tempDate.getMinutes()).slice(-2)
-        setDTPicker(prev => ({ ...prev, jam: false }))
-        setValue("jam", fTime)
-    }
-
     return (
         <CustomKeyboard>
-            <Toast />
+            {dataQuery.isLoading ? <Text>Loading</Text>
+            :
             <View style={{ padding: 20, rowGap: 10 }} >
-                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan jadwal nikah</Text>
+                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Ubah jadwal {name}</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
-
-                <View style={{ flexDirection: "row", borderWidth: errors.pria ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+                <View style={{ flexDirection: "row", borderWidth: errors.judul ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
-                        <Ionicons name="man-sharp" size={24} color="gray" />
+                        <MaterialIcons name="title" size={24} color="gray" />
                     </View>
-                    <Controller control={control} name='pria' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama Pria' placeholderTextColor={'gray'} />
+                    <Controller control={control} name='judul' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
+                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Judul Ibadah' placeholderTextColor={'gray'} />
                     )} />
-                    {errors?.pria && <FontAwesome name="exclamation" size={24} color="red" />}
-                </View>
-                <View style={{ flexDirection: "row", borderWidth: errors.wanita ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
-                    <View style={{ width: wp(10), alignItems: "center" }}>
-                        <Ionicons name="woman-sharp" size={24} color="gray" />
-                    </View>
-                    <Controller control={control} name='wanita' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama Wanita' placeholderTextColor={'gray'} />
-                    )} />
-                    {errors?.wanita && <FontAwesome name="exclamation" size={24} color="red" />}
+                    {errors?.judul && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
                 <Pressable onPress={() => setDTPicker(prev => ({ ...prev, tanggal: true }))} style={{ flexDirection: "row", borderWidth: errors.tanggal ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
                         <FontAwesome name="calendar-o" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='hari' rules={{ required: { value: true } }} render={({ field }) => (
-                        <TextInput style={{ fontSize: hp(2)}} editable={false} {...field} className="font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
+                        <TextInput style={{ fontSize: hp(2) }} editable={false} {...field} className="font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
                     )} />
-                    <Controller control={control} name='tanggal' rules={{ required: { value: true } }} render={({ field, fieldState }) => (
+                    <Controller control={control} name='tanggal' rules={{ required: { value: true } }} render={({ field }) => (
                         <View>
                             {DTPicker.tanggal && <DateTimePicker mode='date' value={new Date()} display='default' onChange={handleHari} />}
-                            <TextInput style={{ flex:1, fontSize: hp(2) }} {...field} className="flex-1 w-full font-semibold text-neutral-500" placeholder='Tanggal' placeholderTextColor={'gray'} />
+                            <TextInput style={{ fontSize: hp(2), flex: 1 }} {...field} className="flex-1 w-full font-semibold text-neutral-500" placeholder='Tanggal' placeholderTextColor={'gray'} />
                         </View>
                     )} />
                     {errors?.tanggal && <FontAwesome name="exclamation" size={24} color="red" />}
@@ -102,7 +118,7 @@ const NikahTambah = () => {
                     <Controller control={control} name='jam' rules={{ required: { value: true } }} render={({ field: { onChange, value } }) => (
                         <View>
                             {DTPicker.jam && <DateTimePicker mode='time' is24Hour={true} value={new Date()} display='default' onChange={handleJam} />}
-                            <TextInput style={{ flex:1, fontSize: hp(2) }} value={value}
+                            <TextInput style={{ fontSize: hp(2), flex:1, }} value={value}
                                 onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
                         </View>
                     )} />
@@ -113,7 +129,7 @@ const NikahTambah = () => {
                         <FontAwesome name="user-o" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='pdt' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Pendeta' placeholderTextColor={'gray'} />
+                        <TextInput style={{ fontSize: hp(2), flex:1, }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Pendeta' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.pdt && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
@@ -122,7 +138,7 @@ const NikahTambah = () => {
                         <FontAwesome name="location-arrow" size={24} color="gray" />
                     </View>
                     <Controller control={control} name='lokasi' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ flex:1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
+                        <TextInput style={{ fontSize: hp(2), flex:1, }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
@@ -133,14 +149,16 @@ const NikahTambah = () => {
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
-                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Nikah</Text>
+                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleUpdate)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
+                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Ubah jadwal {name}</Text>
                         </TouchableOpacity>
                     }
                 </View>
+                <Toast />
             </View>
+            }
         </CustomKeyboard>
     )
 }
 
-export default NikahTambah
+export default BaptisEdit

@@ -67,7 +67,7 @@ export default HomeHeader = () => {
     }
     
     return (
-        <View style={{ paddingTop: top, borderBottomLeftRadius:50, borderBottomRightRadius:50 }} className={`justify-center items-start px-5 h-[120px] bg-[#4682b4]`}>
+        <View style={{ paddingTop: top, borderBottomLeftRadius:30, borderBottomRightRadius:30 }} className={`justify-center items-start px-5 h-[120px] bg-[#4682b4]`}>
             {user ? <SudahLogin/> : <BelumLogin/>}
         </View >
     )

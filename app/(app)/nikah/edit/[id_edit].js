@@ -2,17 +2,21 @@ import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator }
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../../constants/Colors';
-import { db } from '../../../firebaseConfig';
-import CustomKeyboard from '../../../components/CustomKeyboard';
-import { Hari } from '../../../constants/Constant';
-import { doc, setDoc } from 'firebase/firestore';
+import { COLORS } from '../../../../constants/Colors';
+import { db } from '../../../../firebaseConfig';
+import CustomKeyboard from '../../../../components/CustomKeyboard';
+import { Hari } from '../../../../constants/Constant';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {useQuery} from '@tanstack/react-query'
+import {useLocalSearchParams} from 'expo-router'
 
-const NikahTambah = () => {
+const NikahEdit = () => {
+    const { id_edit } = useLocalSearchParams()
+    const name = "nikah"
     const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({defaultValues:{
         pria:null, wanita:null, hari:null, tanggal:null, jam:null, pdt:null, lokasi:null
     }})
@@ -20,22 +24,17 @@ const NikahTambah = () => {
         tanggal: false,
         jam: false,
     })
-
-    const handleAdd = async (data) => {
-        try {
-            const id_nikah = "NKH-" + Date.now()
-            await setDoc(doc(db, "nikah", id_nikah), data)
-                .then(() => {
-                    reset()
-                    Toast.show({ type: 'success', text1: 'Berhasil', text2: 'Jadwal nikah berhasil ditambah' });
-                })
-                .catch(err => {
-                    Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
-                })
-        } catch (error) {
-            Toast.show({ type: 'error', text1: 'Gagal', text2: error.message });
+    
+    const dataQuery = useQuery({
+        queryKey:['nikahEdit', id_edit],
+        queryFn: async () =>{
+            const queryRef = doc(db, name, id_edit)
+            const querySnap = await getDoc(queryRef)
+            const data = querySnap.data()
+            Object.keys(data).map(v => setValue(v, data[v]))
+            return querySnap.data()
         }
-    }
+    })
 
     const handleHari = (event, selectedDate) => {
         const currentDate = selectedDate || new Date()
@@ -55,11 +54,25 @@ const NikahTambah = () => {
         setValue("jam", fTime)
     }
 
+    const handleUpdate = async (data) => {
+        try {
+            const queryRef = doc(db, name, id_edit)
+            await updateDoc(queryRef, data)
+                .then(() => {
+                    Toast.show({ type: 'success', text1: 'Berhasil', text2: `Jadwal ${name} berhasil diubah` });
+                })
+                .catch(err => {
+                    Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
+                })
+        } catch (error) {
+            Toast.show({ type: 'error', text1: 'Gagal', text2: error.message });
+        }
+    }
+
     return (
         <CustomKeyboard>
-            <Toast />
             <View style={{ padding: 20, rowGap: 10 }} >
-                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan jadwal nikah</Text>
+                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Ubah jadwal {name}</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
 
                 <View style={{ flexDirection: "row", borderWidth: errors.pria ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
@@ -133,14 +146,15 @@ const NikahTambah = () => {
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
-                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Nikah</Text>
+                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleUpdate)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius:15 }}>
+                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Ubah jadwal {name}</Text>
                         </TouchableOpacity>
                     }
                 </View>
+                <Toast />
             </View>
         </CustomKeyboard>
     )
 }
 
-export default NikahTambah
+export default NikahEdit

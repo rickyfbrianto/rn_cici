@@ -1,16 +1,14 @@
 import { View, Text, Image, Pressable, SectionList, ActivityIndicator, RefreshControl } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import {router} from 'expo-router'
 import { COLORS } from '../constants/Colors'
-import { Ionicons } from '@expo/vector-icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import NoData from './NoData'
+import { useQuery } from '@tanstack/react-query'
 import {ConvertDataToSection} from '../constants/Function'
 import { db, ibadahCol } from '../firebaseConfig'
 import { deleteDoc, doc, getDocs, limit, orderBy, query } from 'firebase/firestore'
 import { Kategori } from '../constants/Constant'
-import { Octicons, AntDesign } from '@expo/vector-icons';
+import { Octicons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/authContext'
 import { Popup } from 'react-native-popup-confirm-toast'
 
@@ -56,6 +54,10 @@ const IbadahCard = ({style, batas, showControl = false}) => {
             cancelCallback: () => Popup.hide(),
         })
     }
+
+    const handleEdit = async (id) =>{
+        router.replace(`${name}/edit/${id}`)
+    }
     
     return (
         <View style={{flex:1}}>            
@@ -87,7 +89,7 @@ const IbadahCard = ({style, batas, showControl = false}) => {
                                     </View>
                                     {user && showControl &&
                                         <View style={{flexDirection:"row", columnGap:10, position:"absolute", right:15, top:10}}>
-                                            <Pressable>
+                                            <Pressable onPress={()=>handleEdit(item.id)}>
                                                 <AntDesign name="edit" size={16} color="blue" />
                                             </Pressable>
                                             <Pressable onPress={()=>handleDelete(item.id)}>

@@ -57,6 +57,10 @@ const NikahCard = ({style, showControl = false}) => {
         })
     }
 
+    const handleEdit = async (id) =>{
+        router.replace(`${name}/edit/${id}`)
+    }
+
     return (
         <View style={{flex:1}}>
             {dataQuery.isLoading 
@@ -90,7 +94,7 @@ const NikahCard = ({style, showControl = false}) => {
                                 </View>
                                 {user && showControl &&
                                     <View style={{flexDirection:"row", columnGap:10, position:"absolute", right:15, top:10}}>
-                                        <Pressable>
+                                        <Pressable onPress={()=>handleEdit(item.id)}>
                                             <AntDesign name="edit" size={16} color="blue" />
                                         </Pressable>
                                         <Pressable onPress={()=>handleDelete(item.id)}>

@@ -1,10 +1,9 @@
 import React from 'react'
-import { Stack, Tabs } from 'expo-router'
+import { Tabs } from 'expo-router'
 import HomeHeader from '../../components/HomeHeader'
 import { FontAwesome } from '@expo/vector-icons'
 import BeritaHeader from '../../components/BeritaHeader'
 import { COLORS } from '../../constants/Colors'
-import BackButtonHeader from '../../components/BackButtonHeader'
 
 const AppLayout = () => {
     return (
@@ -22,7 +21,7 @@ const AppLayout = () => {
             <Tabs.Screen name="ibadah" options={{ href: null, headerShown: false, tabBarHideOnKeyboard: true, tabBarStyle: { display: "none" } }} />
             <Tabs.Screen name="nikah" options={{ href: null, headerShown: false, tabBarHideOnKeyboard: true, tabBarStyle: { display: "none" } }} />
             <Tabs.Screen name="baptis" options={{ href: null, headerShown: false, tabBarHideOnKeyboard: true, tabBarStyle: { display: "none" } }} />
-            <Tabs.Screen name="user" options={{ href: null, }} />
+            <Tabs.Screen name="user" options={{ tabBarIcon: ({color})=> <FontAwesome name="user-o" size={28} color={color} /> }} />
         </Tabs>
     )
 }
