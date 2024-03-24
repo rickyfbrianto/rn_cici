@@ -19,9 +19,9 @@ export default {
 };
 
 export const COLORS = {
-    PRIMARY: "steelblue",
-    SECONDARY: "#6f4e37",
-    TEAL: "rgb(20 184 166)",
-    INDIGO: "rgb(99 102 241)",
-    RED:"rgb(239 68 68)"
+  PRIMARY: "#3e517a",
+  SECONDARY: "#6f4e37",
+  TEAL: "rgb(20 184 166)",
+  INDIGO: "rgb(99 102 241)",
+  RED: "rgb(239 68 68)"
 }

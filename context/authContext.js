@@ -12,11 +12,10 @@ export const AuthContextProvider = ({ children }) => {
     const updateUserData = async (userId) => {
         const docRef = doc(db, "users", userId)
         const docSnap = await getDoc(docRef)
-
         if (docSnap.exists()) {
             let data = docSnap.data();
             setUser(prev => (
-                { username: data.username, userId: data.userId }
+                { username: data.username, userId: data.userId, level: data.level }
             ))
         }
     }
@@ -61,7 +60,8 @@ export const AuthContextProvider = ({ children }) => {
 
             await setDoc(doc(db, "users", respons?.user?.uid), {
                 username,
-                userId: respons?.user?.uid
+                userId: respons?.user?.uid,
+                level: "user"
             })
             return { success: true, data: respons?.user, msg: "Oke" }
         } catch (error) {
@@ -73,7 +73,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, updateUserData }}>
             {children}
         </AuthContext.Provider>
     )

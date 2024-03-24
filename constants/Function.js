@@ -1,11 +1,11 @@
-import {useQueryClient} from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
-export const ConvertDataToSection = (val) =>{
+export const ConvertDataToSection = (val) => {
     let tempData = val.reduce((accum, current) => {
         // let dateGroup = accum.find(x => x.tanggal === current.tanggal);
         let dateGroup = accum.find(x => x.tanggal === current.hari + ", " + current.tanggal);
         if (!dateGroup) {
-            dateGroup = { tanggal: current.hari + ", " + current.tanggal , data: [] }
+            dateGroup = { tanggal: current.hari + ", " + current.tanggal, data: [] }
             accum.push(dateGroup);
         }
         dateGroup.data.push(current);
@@ -14,7 +14,7 @@ export const ConvertDataToSection = (val) =>{
     return tempData
 }
 
-export function getQueryKey(){
+export function getQueryKey() {
     const queryClient = useQueryClient()
 
     const queryCache = queryClient.getQueryCache()
@@ -22,4 +22,14 @@ export function getQueryKey(){
         console.log(cache.queryKey);
         cache.queryKey
     })
+}
+
+export const getYearMonthDay = (date) => {
+    const tgl = new Date(date)
+    return tgl.getFullYear() + "-" + ('0' + (tgl.getMonth() + 1)).slice(-2) + "-" + ('0' + tgl.getDate()).slice(-2)
+}
+
+export function addWeeks(date, weeks) {
+    date.setDate(date.getDate() + 7 * weeks);
+    return date;
 }

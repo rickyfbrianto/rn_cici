@@ -1,10 +1,10 @@
-import { View, Text, Image, Pressable, SectionList, ActivityIndicator, RefreshControl, StyleSheet } from 'react-native'
+import { View, Text, Image, Pressable, SectionList, ActivityIndicator, RefreshControl, StyleSheet, FlatList } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { COLORS } from '../constants/Colors'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ConvertDataToSection, addWeeks, getYearMonthDay } from '../constants/Function'
-import { baptisCol, db } from '../firebaseConfig'
+import { db, usersCol } from '../firebaseConfig'
 import { deleteDoc, doc, endAt, getDocs, orderBy, query, startAt } from 'firebase/firestore'
 import { router } from 'expo-router'
 import { Kategori } from '../constants/Constant';
@@ -13,21 +13,20 @@ import { useAuth } from '../context/authContext'
 import { Popup } from 'react-native-popup-confirm-toast'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 
-const name = "baptis"
+const name = "users"
+const colorBase = Kategori[name].color
 
-const CardBaptis = ({ style, batas, showControl = false }) => {
+const CardUser = ({ style, batas, showControl = false }) => {
     const [refresh, setRefresh] = useState(false)
-    const colorBase = Kategori[name].color
-    const tanggal = getYearMonthDay(new Date())
 
     const dataQuery = useQuery({
-        queryKey: ['baptisList'],
+        queryKey: ['usersList'],
         queryFn: async () => {
-            const queryRef = query(baptisCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))))
+            const queryRef = query(usersCol, orderBy("username"))
             const querySnap = await getDocs(queryRef)
             let temp = []
             querySnap.forEach(v => {
-                temp.push({ ...v.data(), id: v?.id })
+                temp.push({ ...v.data(), id: v?.id, email: v?.email })
             })
             return temp
         },
@@ -52,18 +51,10 @@ const CardBaptis = ({ style, batas, showControl = false }) => {
                 :
                 <>
                     {dataQuery.data.length > 0
-                        ? <SectionList sections={ConvertDataToSection(dataQuery.data)} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
+                        ?
+                        <FlatList data={dataQuery.data}
                             refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
-                            renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
-                            renderSectionHeader={({ section }) => (
-                                <View className="flex-row justify-start items-end mt-3 gap-x-3 p-3 rounded-2xl" style={{ backgroundColor: colorBase, borderRadius: 10, ...style }}>
-                                    <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-                                        <Text className={`text-white`} style={{ fontFamily: "outfit", fontSize: hp(2) }}>{section.tanggal.split(", ")[0]}</Text>
-                                        <Text className={`text-white`} style={{ fontFamily: "outfit", fontSize: hp(2) }}>{section.tanggal.split(", ")[1]}</Text>
-                                    </View>
-                                </View>
-                            )}
-                        />
+                            renderItem={({ item }) => <CardItem item={item} showControl={showControl} />} />
                         :
                         <Pressable onPress={handleRefresh} style={{ rowGap: hp(1.5), height: 100, justifyContent: "center", alignItems: "center" }}>
                             <Ionicons name="refresh" size={24} color={COLORS.RED} />
@@ -82,40 +73,40 @@ const CardItem = ({ item, showControl }) => {
     const { user } = useAuth()
     const ref = doc(db, `${name}/${item.id}`)
 
-    const closeSwipable = (() => swipeRef?.current?.close())()
+    const closeSwipable = () => swipeRef?.current?.close()
 
     const handleDelete = async () => {
         Popup.show({
             type: 'confirm',
             title: 'Hapus',
-            textBody: `Hapus jadwal ${name}?`,
+            textBody: `Hapus ${name}?`,
             confirmText: 'Batal',
             buttonText: 'Hapus',
             callback: () => {
                 closeSwipable()
-                deleteDoc(ref).then(() => queryClient.invalidateQueries('baptisList'))
+                deleteDoc(ref).then(() => queryClient.invalidateQueries('usersList'))
                 Popup.hide();
             },
             cancelCallback: () => Popup.hide(),
         })
     }
 
-    const handleEdit = async () => {
-        router.replace(`${name}/edit/${item.id}`)
-    }
+    const handleEdit = async () => router.replace(`${name}/edit/${item.id}`)
 
     const LeftSwipe = () => {
         return (
             <>
                 {user && showControl &&
-                    <View style={{ justifyContent: "center", marginEnd: 10 }}>
+                    <View style={{ justifyContent: "center", marginEnd: 10, marginTop: 10 }}>
                         <View style={{ flexDirection: "row", columnGap: 10, width: 100, height: 50, marginVertical: 8 }}>
                             <Pressable style={{ ...styles.leftButtonAction, backgroundColor: "#f5e960" }} onPress={() => handleEdit(item.id)}>
                                 <AntDesign name="edit" size={16} color="blue" />
                             </Pressable>
-                            <Pressable style={{ ...styles.leftButtonAction, backgroundColor: "indianred" }} onPress={() => handleDelete(item.id)}>
-                                <AntDesign name="delete" size={16} color="white" />
-                            </Pressable>
+                            {(item.username != user?.username) &&
+                                <Pressable style={{ ...styles.leftButtonAction, backgroundColor: colorBase }} onPress={() => handleDelete(item.id)}>
+                                    <AntDesign name="delete" size={16} color="white" />
+                                </Pressable>
+                            }
                         </View>
                     </View>
                 }
@@ -125,22 +116,20 @@ const CardItem = ({ item, showControl }) => {
 
     return (
         <Swipeable ref={swipeRef} renderLeftActions={LeftSwipe}>
-            <Pressable onPress={() => { router.push(`${name}/${item.id}`) }} key={item.id} style={{ position: "relative" }} className="flex-row items-center gap-x-3 my-2 bg-white p-3 rounded-3xl">
-                <Image style={{ height: 100, width: 100 }} source={require('../assets/images/welcome.jpg')} />
-                <View>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.6) }}>{item.judul}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", columnGap: wp(2) }}>
-                        <AntDesign name="user" size={hp(1.7)} color="black" />
-                        <Text style={{ fontFamily: "outfit", fontSize: hp(2) }}>Pdt. {item.pdt}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", columnGap: wp(2) }}>
-                        <Octicons name="clock" size={hp(1.7)} color="black" />
-                        <Text style={{ fontFamily: "outfit", fontSize: hp(1.7) }}>{item.jam}</Text>
+            <View style={{
+                height: 50, flexDirection: "row", justifyContent: "space-between",
+                columnGap: 5, alignItems: "center", paddingVertical: 5, paddingHorizontal: 10, marginTop: 10,
+                borderRadius: 10, backgroundColor: (item.username == user?.username ? colorBase : "white"),
+            }}>
+                <View style={{ flexDirection: "row", alignItems: "center", columnGap: 8 }}>
+                    <AntDesign name="user" size={18} color={item.username == user?.username ? "white" : "black"} />
+                    <View>
+                        <Text style={{ color: (item.username == user?.username && "white"), fontFamily: "outfit" }}>{item.username}</Text>
+                        {item.username == user?.username && <Text style={{ color: "white", fontFamily: "outfit" }}>Sedang login</Text>}
                     </View>
                 </View>
-            </Pressable>
+                <Text style={{ fontFamily: "outfit", color: (item.username == user?.username && "white") }}>{item?.level}</Text>
+            </View>
         </Swipeable>
     )
 }
@@ -151,4 +140,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CardBaptis
+export default CardUser

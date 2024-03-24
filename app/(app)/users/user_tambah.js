@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const UserPage = () => {
+const UserTambah = () => {
     return (
         <View>
-            <Text>UserPage</Text>
+            <Text>user_tambah</Text>
         </View>
     )
 }
 
-export default UserPage
+export default UserTambah

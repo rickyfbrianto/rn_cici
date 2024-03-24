@@ -4,8 +4,10 @@ import HomeHeader from '../../components/HomeHeader'
 import { FontAwesome } from '@expo/vector-icons'
 import BeritaHeader from '../../components/BeritaHeader'
 import { COLORS } from '../../constants/Colors'
+import { useAuth } from '../../context/authContext'
 
 const AppLayout = () => {
+    const { user } = useAuth()
     return (
         // <Stack>
         //     <Stack.Screen name="home" options={{ header: () => <HomeHeader /> }} />
@@ -21,7 +23,7 @@ const AppLayout = () => {
             <Tabs.Screen name="ibadah" options={{ href: null, headerShown: false, tabBarHideOnKeyboard: true, tabBarStyle: { display: "none" } }} />
             <Tabs.Screen name="nikah" options={{ href: null, headerShown: false, tabBarHideOnKeyboard: true, tabBarStyle: { display: "none" } }} />
             <Tabs.Screen name="baptis" options={{ href: null, headerShown: false, tabBarHideOnKeyboard: true, tabBarStyle: { display: "none" } }} />
-            <Tabs.Screen name="user" options={{ tabBarIcon: ({color})=> <FontAwesome name="user-o" size={28} color={color} /> }} />
+            <Tabs.Screen name="users" options={{ href: user?.level == "admin" ? "users" : null, headerShown: false, tabBarIcon: ({ color }) => <FontAwesome name="user-o" size={28} color={color} /> }} />
         </Tabs>
     )
 }
