@@ -1,14 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query'
 
-export const ConvertDataToSection = (val) => {
+export const ConvertDataToSection = ({val, sort=""}) => {
     let tempData = val.reduce((accum, current) => {
-        // let dateGroup = accum.find(x => x.tanggal === current.tanggal);
         let dateGroup = accum.find(x => x.tanggal === current.hari + ", " + current.tanggal);
         if (!dateGroup) {
             dateGroup = { tanggal: current.hari + ", " + current.tanggal, data: [] }
             accum.push(dateGroup);
         }
         dateGroup.data.push(current);
+        if(sort) dateGroup.data.sort((a, b)=> a[sort] - b[sort])
         return accum;
     }, []);
     return tempData

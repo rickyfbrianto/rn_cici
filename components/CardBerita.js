@@ -4,8 +4,8 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import { COLORS } from '../constants/Colors'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ConvertDataToSection, addWeeks, getYearMonthDay } from '../constants/Function'
-import { db, usersCol } from '../firebaseConfig'
-import { deleteDoc, doc, endAt, getDocs, orderBy, query, startAt } from 'firebase/firestore'
+import { beritaCol, db } from '../firebaseConfig'
+import { deleteDoc, doc, getDocs, query } from 'firebase/firestore'
 import { router } from 'expo-router'
 import { Kategori } from '../constants/Constant';
 import { Ionicons, Octicons, AntDesign } from '@expo/vector-icons';
@@ -13,25 +13,25 @@ import { useAuth } from '../context/authContext'
 import { Popup } from 'react-native-popup-confirm-toast'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 
-const name = "users"
+const name = "berita"
 const colorBase = Kategori[name].color
 
-const CardUser = ({ style, batas, showControl = false }) => {
+const CardBerita = ({ style, batas, showControl = false }) => {
     const [refresh, setRefresh] = useState(false)
 
     const dataQuery = useQuery({
-        queryKey: ['usersList'],
-        queryFn: async () => {
-            const queryRef = query(usersCol, orderBy("username"))
+        queryKey:['beritaList'],
+        queryFn: async ()=>{
+            const queryRef = query(beritaCol)
             const querySnap = await getDocs(queryRef)
-            let temp = []
+            const temp = []
             querySnap.forEach(v => {
-                temp.push({ ...v.data(), id: v?.id, email: v?.email })
+                temp.push({ ...v.data(), id: v?.id })
             })
             return temp
-        },
+        }
     })
-    dataQuery.refetch()
+    dataQuery.refetch()    
 
     const handleRefresh = () => {
         setRefresh(true)
@@ -43,31 +43,13 @@ const CardUser = ({ style, batas, showControl = false }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            {dataQuery.isLoading
-                ? <View style={{ flex: 1, marginVertical: hp(2), borderBottomWidth: 1, borderBottomColor: COLORS.SECONDARY, justifyContent: "center", alignItems: "center", rowGap: hp(2) }}>
-                    <ActivityIndicator size='large' color={COLORS.PRIMARY} />
-                    <Text style={{ fontFamily: "outfit-bold" }}>Mengambil jadwal {name}..</Text>
-                </View>
-                :
-                <>
-                    {dataQuery.data.length > 0
-                        ?
-                        <FlatList data={dataQuery.data}
-                            refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
-                            renderItem={({ item }) => <CardItem item={item} showControl={showControl} />} />
-                        :
-                        <Pressable onPress={handleRefresh} style={{ rowGap: hp(1.5), height: 100, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name="refresh" size={24} color={COLORS.RED} />
-                            <Text style={{ fontFamily: "outfit", fontSize: hp(2.4) }}>Refresh data {name}</Text>
-                        </Pressable>
-                    }
-                </>
-            }
+            <FlatList data={dataQuery.data} showsVerticalScrollIndicator={false} numColumns={2} columnWrapperStyle={{columnGap:wp(4), flexWrap:"wrap"}} keyExtractor={(item, index) => index+item}
+                renderItem={({ item, index }) => <CardItem index={index} item={item} showControl={showControl} />} />
         </View>
     )
 }
 
-const CardItem = ({ item, showControl }) => {
+const CardItem = ({ item, index, showControl }) => {
     const swipeRef = useRef()
     const queryClient = useQueryClient()
     const { user } = useAuth()
@@ -98,7 +80,7 @@ const CardItem = ({ item, showControl }) => {
             <>
                 {user && showControl &&
                     <View style={{ justifyContent: "center", marginEnd: 10, marginTop: 10 }}>
-                        <View style={{ flexDirection: "row", columnGap: 10, width: 100, height: 50, marginVertical: 8 }}>
+                        <View style={{ rowGap: 10, width: 50, height: 100, }}>
                             <Pressable style={{ ...styles.leftButtonAction, backgroundColor: "#f5e960" }} onPress={() => handleEdit(item.id)}>
                                 <AntDesign name="edit" size={16} color="blue" />
                             </Pressable>
@@ -116,19 +98,15 @@ const CardItem = ({ item, showControl }) => {
 
     return (
         <Swipeable ref={swipeRef} renderLeftActions={LeftSwipe}>
-            <View style={{
-                height: 50, flexDirection: "row", justifyContent: "space-between",
-                columnGap: 5, alignItems: "center", paddingVertical: 5, paddingHorizontal: 10, marginTop: 10,
-                borderRadius: 10, backgroundColor: (item.username == user?.username ? colorBase : "white"),
-            }}>
-                <View style={{ flexDirection: "row", alignItems: "center", columnGap: 8 }}>
-                    <AntDesign name="user" size={18} color={item.username == user?.username ? "white" : "black"} />
-                    <View>
-                        <Text style={{ color: (item.username == user?.username && "white"), fontFamily: "outfit" }}>{item.username}</Text>
-                        {item.username == user?.username && <Text style={{ color: "white", fontFamily: "outfit" }}>Sedang login</Text>}
-                    </View>
+            <View style={{ width: wp(45), height: wp(45), columnGap: 5, marginTop: wp(4), borderRadius: 10, backgroundColor: colorBase }}>
+                <Text style={{fontFamily:"outfit", zIndex:10, width:wp(8), textAlign:"center", backgroundColor:COLORS.VIRIDIAN, height:40, alignItems:"center", color:"white", position:"absolute", top:0, left:0, padding:10, borderTopLeftRadius:10, borderBottomRightRadius:10}}>{index +1}</Text>
+                <View style={{alignItems:"center"}}>
+                    <Image style={{height:wp(30), borderTopLeftRadius:10, borderTopRightRadius:10, resizeMode:"center", aspectRatio:1, width:wp(50)}} source={require(`../assets/images/news1.png`)}/>
                 </View>
-                <Text style={{ fontFamily: "outfit", color: (item.username == user?.username && "white") }}>{item?.level}</Text>
+                <View style={{paddingVertical:wp(2), paddingHorizontal:wp(2), borderTopColor:"white", borderTopWidth:1}}>
+                    <Text style={{ color: "white", fontFamily: "outfit-bold" }}>{item.judul}</Text>
+                    <Text style={{ color: "white", fontFamily: "outfit" }}>2024-03-01</Text>
+                </View>
             </View>
         </Swipeable>
     )
@@ -140,4 +118,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CardUser
+export default CardBerita

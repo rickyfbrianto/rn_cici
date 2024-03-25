@@ -52,7 +52,7 @@ const CardBaptis = ({ style, batas, showControl = false }) => {
                 :
                 <>
                     {dataQuery.data.length > 0
-                        ? <SectionList sections={ConvertDataToSection(dataQuery.data)} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
+                        ? <SectionList sections={ConvertDataToSection({val: dataQuery.data, sort:"jam"})} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
                             refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
                             renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
                             renderSectionHeader={({ section }) => (

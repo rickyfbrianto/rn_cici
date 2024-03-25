@@ -20,8 +20,11 @@ export default {
 
 export const COLORS = {
   PRIMARY: "#3e517a",
-  SECONDARY: "#6f4e37",
+  SECONDARY: "#d0d6b5",
+  WHITE:"#f6f7eb",
+  VIRIDIAN: "#56876d",
+  GUNMETAL: "#012a36",
   TEAL: "rgb(20 184 166)",
   INDIGO: "rgb(99 102 241)",
-  RED: "rgb(239 68 68)"
+  RED: "rgb(239 68 68)",
 }

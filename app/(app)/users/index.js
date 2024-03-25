@@ -5,16 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAuth } from '../../../context/authContext'
 import { Kategori } from '../../../constants/Constant'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import BackButtonHeader from '../../../components/BackButtonHeader'
-import { SpeedDial } from '@rneui/themed'
 import { router } from 'expo-router'
 
 const UserPage = () => {
     const name = "users"
     const { top } = useSafeAreaInsets()
-    const [page, setPage] = useState({
-        openSpeedDial: false
-    });
     const { user } = useAuth()
     const colorBase = Kategori[name].color
 
@@ -38,17 +33,6 @@ const UserPage = () => {
                 </View>
                 <CardUser style={{ "backgroundColor": colorBase }} showControl={true} />
             </View>
-            {user?.level == "admin" &&
-                <SpeedDial
-                    color={colorBase}
-                    isOpen={page.openSpeedDial}
-                    icon={{ name: 'add', color: '#fff' }}
-                    openIcon={{ name: 'close', color: '#fff' }}
-                    onOpen={() => setPage(prev => ({ ...prev, openSpeedDial: true }))}
-                    onClose={() => setPage(prev => ({ ...prev, openSpeedDial: false }))}>
-                    <SpeedDial.Action color={colorBase} icon={{ name: 'add', color: '#fff' }} title="Baptis" onPress={() => router.push('baptis/baptis_tambah')} />
-                </SpeedDial>
-            }
         </>
     )
 }

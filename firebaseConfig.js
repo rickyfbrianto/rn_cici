@@ -23,6 +23,7 @@ export const auth = initializeAuth(app, {
 export const db = getFirestore(app)
 
 export const usersCol = collection(db, "users")
+export const beritaCol = collection(db, "berita")
 export const ibadahCol = collection(db, "ibadah")
 export const nikahCol = collection(db, "nikah")
 export const baptisCol = collection(db, "baptis")

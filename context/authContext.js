@@ -29,7 +29,6 @@ export const AuthContextProvider = ({ children }) => {
             } else {
                 setIsAuthenticated(false)
                 setUser(null)
-
             }
         })
         return unsub

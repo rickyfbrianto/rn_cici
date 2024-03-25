@@ -27,10 +27,7 @@ const MainLayout = () => {
         // } else if (!isAuthenticated) {
         //     router.replace('signIn')
         // }
-        // router.replace('home')
-        setTimeout(()=>{
-            router.replace('home')
-        }, 3000)
+        router.replace('home')
     }, [isAuthenticated])
 
     // return <Slot />

@@ -49,8 +49,8 @@ export default HomeHeader = () => {
                 </Menu>
 
                 <View className="">
-                    <Text style={{ fontFamily: "outfit", fontSize: hp(2) }} className="font-medium text-white">Welcome,</Text>
-                    <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white">{user?.username}</Text>
+                    <Text style={{ fontFamily: "outfit", fontSize: hp(2.2) }} className="font-medium text-white">Shalom,</Text>
+                    <Text style={{ fontFamily: "outfit-bold", fontSize: hp(3) }} className="text-white">{user?.username?.toUpperCase()}</Text>
                 </View>
             </View>
         )
