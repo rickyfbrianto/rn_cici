@@ -27,9 +27,9 @@ const IbadahEdit = () => {
     })
     
     const dataQuery = useQuery({
-        queryKey:['ibadahEdit1', id_edit],
+        queryKey:['ibadahEdit', id_edit],
         queryFn: async ()=>{
-            const queryRef = doc(db, "ibadah", id_edit)
+            const queryRef = doc(db, name, id_edit)
             const querySnap = await getDoc(queryRef)
             const data = querySnap.data()
             Object.keys(data).map(v=> setValue(v, data[v]))

@@ -1,9 +1,8 @@
-import { View, Text, Image, Pressable, SectionList, ActivityIndicator, RefreshControl, StyleSheet, FlatList } from 'react-native'
+import { View, Text, Image, Pressable, RefreshControl, StyleSheet, FlatList } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { COLORS } from '../constants/Colors'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ConvertDataToSection, addWeeks, getYearMonthDay } from '../constants/Function'
 import { beritaCol, db } from '../firebaseConfig'
 import { deleteDoc, doc, getDocs, query } from 'firebase/firestore'
 import { router } from 'expo-router'
@@ -44,7 +43,8 @@ const CardBerita = ({ style, batas, showControl = false }) => {
     return (
         <View style={{ flex: 1 }}>
             <FlatList data={dataQuery.data} showsVerticalScrollIndicator={false} numColumns={2} columnWrapperStyle={{columnGap:wp(4), flexWrap:"wrap"}} keyExtractor={(item, index) => index+item}
-                renderItem={({ item, index }) => <CardItem index={index} item={item} showControl={showControl} />} />
+            refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
+            renderItem={({ item, index }) => <CardItem index={index} item={item} showControl={showControl} />} />
         </View>
     )
 }
@@ -95,19 +95,19 @@ const CardItem = ({ item, index, showControl }) => {
             </>
         )
     }
-
+    
     return (
         <Swipeable ref={swipeRef} renderLeftActions={LeftSwipe}>
-            <View style={{ width: wp(45), height: wp(45), columnGap: 5, marginTop: wp(4), borderRadius: 10, backgroundColor: colorBase }}>
+            <Pressable onPress={()=> router.push(`${name}/${item.id}`)} style={{ width: wp(45), height: wp(45), columnGap: 5, marginTop: wp(4), borderRadius: 10, backgroundColor: "#edebd7" }}>
                 <Text style={{fontFamily:"outfit", zIndex:10, width:wp(8), textAlign:"center", backgroundColor:COLORS.VIRIDIAN, height:40, alignItems:"center", color:"white", position:"absolute", top:0, left:0, padding:10, borderTopLeftRadius:10, borderBottomRightRadius:10}}>{index +1}</Text>
                 <View style={{alignItems:"center"}}>
                     <Image style={{height:wp(30), borderTopLeftRadius:10, borderTopRightRadius:10, resizeMode:"center", aspectRatio:1, width:wp(50)}} source={require(`../assets/images/news1.png`)}/>
                 </View>
-                <View style={{paddingVertical:wp(2), paddingHorizontal:wp(2), borderTopColor:"white", borderTopWidth:1}}>
-                    <Text style={{ color: "white", fontFamily: "outfit-bold" }}>{item.judul}</Text>
-                    <Text style={{ color: "white", fontFamily: "outfit" }}>2024-03-01</Text>
+                <View style={{ backgroundColor:"white", height:wp(15), padding:wp(2), borderBottomLeftRadius:10, borderBottomRightRadius:10}}>
+                    <Text style={{ color: "gray", fontFamily: "outfit-bold" }}>{item.judul}</Text>
+                    <Text style={{ color: "gray", fontFamily: "outfit", fontSize:hp(1.6) }}>{item.tanggal}</Text>
                 </View>
-            </View>
+            </Pressable>
         </Swipeable>
     )
 }
