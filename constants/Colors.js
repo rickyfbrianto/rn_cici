@@ -27,4 +27,8 @@ export const COLORS = {
   TEAL: "rgb(20 184 166)",
   INDIGO: "rgb(99 102 241)",
   RED: "rgb(239 68 68)",
+  BABYPOWDER:"#fafdf6",
+  VANDYKE:"#483d3f",
+  CARIBBEAN:"#2c666e",
+CHARCOAL:"#3d5467"
 }

@@ -61,7 +61,7 @@ const IbadahCard = ({ style, batas, showControl = false }) => {
                             refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
                             renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
                             renderSectionHeader={({ section }) => (
-                                <View className="flex-row justify-start items-end mt-3 gap-x-3 p-3 rounded-2xl" style={{ backgroundColor: colorBase, borderRadius: 10, ...style }}>
+                                <View style={{ flexDirection:"row", justifyContent:"flex-start", alignItems:"flex-end", columnGap:wp(2), padding: 10, backgroundColor: colorBase, borderRadius: 10, ...style }}>
                                     <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
                                         <Text className={`text-white`} style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>{section.tanggal.split(", ")[0]}</Text>
                                         <Text className={`text-white`} style={{ fontFamily: "outfit", fontSize: hp(2) }}>{section.tanggal.split(", ")[1]}</Text>

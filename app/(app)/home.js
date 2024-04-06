@@ -11,9 +11,9 @@ const Home = () => {
             <View style={{paddingHorizontal: hp(2)}}>
                 <KategoriFilter />
             </View>
-            <View style={{ paddingHorizontal: hp(2), paddingVertical:hp(2), flex: 1, backgroundColor:COLORS.PRIMARY, borderTopRightRadius:50, }}>
-                <Text style={{ fontFamily: "outfit", fontSize: hp(3), marginBottom:hp(1), fontWeight: "bold", color:"white" }}>Jadwal Ibadah</Text>
-                <View style={{borderBottomWidth:1, borderColor:"white"}}/>
+            <View style={{ paddingHorizontal: hp(2), paddingVertical:hp(2), flex: 1, backgroundColor:COLORS.BABYPOWDER, borderTopRightRadius:50, }}>
+                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.6), color:"gray" }}>Jadwal Ibadah</Text>
+                <View style={{borderBottomWidth:1, marginVertical:hp(1), borderColor:"gray"}}/>
                 <CardIbadah batas={3} style={{backgroundColor:COLORS.PRIMARY}}/>
             </View>
         </View >
