@@ -1,5 +1,5 @@
 import { View, Text, Platform, Pressable } from 'react-native'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Image } from 'expo-image';
@@ -8,14 +8,22 @@ import { useAuth } from '../context/authContext';
 import { MenuItem } from './CustomMenuItems';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Feather, MaterialIcons, EvilIcons } from '@expo/vector-icons';
-import { Link, router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { COLORS } from '../constants/Colors';
+import { getUser } from '../constants/DataQuery'
 
 const ios = Platform.OS == "ios"
 
 export default HomeHeader = () => {
     const { top } = useSafeAreaInsets()
     const { user, logout } = useAuth()
+    const userData = getUser(user?.id)
+
+    useFocusEffect(
+        useCallback(() => {
+            userData.refetch()
+        }, [])
+    )
 
     const handleProfile = () => router.push({ pathname: `users/edit/[id_edit]`, params: { id_edit: user.userId } });
     const handleLogout = () => {
@@ -29,7 +37,7 @@ export default HomeHeader = () => {
             <View className="flex-row items-center gap-x-4">
                 <Menu>
                     <MenuTrigger>
-                        <Image style={{ height: hp(7), aspectRatio: 1, borderRadius: 100 }} source="https://picsum.photos/seed/696/3000/2000" placeholder={blurhash} transition={500} />
+                        <Image style={{ height: hp(7), aspectRatio: 1, borderRadius: 100 }} source={userData.data?.photoURL ? { uri: userData.data?.photoURL } : "https://picsum.photos/seed/696/3000/2000"} placeholder={blurhash} transition={500} />
                     </MenuTrigger>
 
                     <MenuOptions customStyles={{
@@ -50,7 +58,7 @@ export default HomeHeader = () => {
 
                 <View className="">
                     <Text style={{ fontFamily: "outfit", fontSize: hp(2.2) }} className="font-medium text-white">Shalom,</Text>
-                    <Text style={{ fontFamily: "outfit-bold", fontSize: hp(3) }} className="text-white">{user?.username?.toUpperCase()}</Text>
+                    <Text style={{ fontFamily: "outfit-bold", fontSize: hp(3) }} className="text-white">{userData.data?.username?.toUpperCase()}</Text>
                 </View>
             </View>
         )

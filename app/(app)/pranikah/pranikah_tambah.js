@@ -25,11 +25,11 @@ const NikahTambah = () => {
 
     const handleAdd = async (data) => {
         try {
-            const id_nikah = "NKH-" + Date.now()
-            await setDoc(doc(db, "nikah", id_nikah), data)
+            const id_pranikah = "PRANKH-" + Date.now()
+            await setDoc(doc(db, "pranikah", id_pranikah), data)
                 .then(() => {
                     reset()
-                    Toast.show({ type: 'success', text1: 'Berhasil', text2: 'Jadwal nikah berhasil ditambah' });
+                    Toast.show({ type: 'success', text1: 'Berhasil', text2: 'Jadwal pranikah berhasil ditambah' });
                 })
                 .catch(err => {
                     Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
@@ -60,7 +60,7 @@ const NikahTambah = () => {
     return (
         <CustomKeyboard>
             <View style={{ padding: 20, rowGap: 10 }} >
-                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan jadwal nikah</Text>
+                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan jadwal pranikah</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
 
                 <View style={{ flexDirection: "row", borderWidth: errors.pria ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
@@ -135,7 +135,7 @@ const NikahTambah = () => {
                         </View>
                         :
                         <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius: 15 }}>
-                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Nikah</Text>
+                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat Jadwal Pranikah</Text>
                         </TouchableOpacity>
                     }
                 </View>

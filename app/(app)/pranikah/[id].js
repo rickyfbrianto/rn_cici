@@ -18,9 +18,9 @@ const NikahDetail = () => {
     const ayat = AyatNikah[Math.floor(Math.random() * 10)]
 
     const dataQuery = useQuery({
-        queryKey: ['nikahDetail', id],
+        queryKey: ['pranikahDetail', id],
         queryFn: async () => {
-            const ref = doc(db, "nikah", id);
+            const ref = doc(db, "pranikah", id);
             const dataSnap = await getDoc(ref)
             return dataSnap.data()
         },

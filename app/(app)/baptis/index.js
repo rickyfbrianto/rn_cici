@@ -33,7 +33,7 @@ const index = () => {
                 </View>
                 <CardBaptis style={{ "backgroundColor": colorBase }} showControl={true} />
             </View>
-            {user &&
+            {user && user?.level == "admin" &&
                 <SpeedDial
                     color={colorBase}
                     isOpen={page.openSpeedDial}

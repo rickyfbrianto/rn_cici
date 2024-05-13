@@ -1,21 +1,21 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
+import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import { FontAwesome, Ionicons, AntDesign, Octicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons';
 import { COLORS } from '../../../../constants/Colors';
-import { app, db } from '../../../../firebaseConfig';
+import { db } from '../../../../firebaseConfig';
 import CustomKeyboard from '../../../../components/CustomKeyboard';
-import { Hari } from '../../../../constants/Constant';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams } from 'expo-router'
-import { getAuth, updatePassword } from 'firebase/auth';
+import { getAuth, updatePassword, updateProfile } from 'firebase/auth';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useAuth } from '../../../../context/authContext';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const UserEdit = () => {
     const { id_edit } = useLocalSearchParams()
@@ -23,9 +23,11 @@ const UserEdit = () => {
     const { user, updateUserData } = useAuth()
     const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
-            username: null
+            username: "", phone: ""
         }
     })
+    const [image, setImage] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     const dataLevel = [
         { label: 'User', value: 'user' },
@@ -39,10 +41,23 @@ const UserEdit = () => {
             const querySnap = await getDoc(queryRef)
             const data = querySnap.data()
             setValue("username", data.username)
+            setValue("phone", data.phone)
             setValue("level", data.level)
+            setImage(data.photoURL)
             return querySnap.data()
         }
     })
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) setImage(result.assets[0].uri);
+    };
 
     const handleUpdate = async (data) => {
         try {
@@ -57,17 +72,32 @@ const UserEdit = () => {
             //     console.log(error);
             // });
             // return
-            const queryRef = doc(db, name, id_edit)
-            await updateDoc(queryRef, data)
-                .then(() => {
-                    if (user.userId == id_edit) updateUserData(id_edit)
-                    dataQuery.refetch()
-                    Toast.show({ type: 'success', text1: 'Berhasil', text2: `User berhasil diubah` });
+
+            setLoading(true)
+            const res = await fetch(image)
+            const blob = await res.blob()
+            const storage = getStorage();
+            const storageRef = ref(storage, 'users/' + user.id + ".jpg");
+            uploadBytes(storageRef, blob).then(() => {
+                getDownloadURL(storageRef).then(async url => {
+                    data.photoURL = url
+                    const auth = getAuth()
+                    Promise.all([
+                        await updateProfile(auth.currentUser, {
+                            displayName: data.username,
+                            phoneNumber: data.phone,
+                            photoURL: url
+                        }),
+                        await updateDoc(doc(db, name, id_edit), data),
+                    ]).then(() => {
+                        dataQuery.refetch()
+                        setLoading(false)
+                        Toast.show({ type: 'success', text1: 'Berhasil', text2: `User berhasil diubah` });
+                    })
                 })
-                .catch(err => {
-                    Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
-                })
+            })
         } catch (error) {
+            setLoading(false)
             Toast.show({ type: 'error', text1: 'Gagal', text2: error.message });
         }
     }
@@ -80,13 +110,30 @@ const UserEdit = () => {
 
                 <View style={{ flexDirection: "row", borderWidth: errors.username ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
-                        <AntDesign name="user" size={24} color="gray" />
+                        <AntDesign name="user" size={20} color="gray" />
                     </View>
                     <Controller control={control} name='username' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
                         <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Username' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.username && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
+                <View style={{ flexDirection: "row", borderWidth: errors.phone ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+                    <View style={{ width: wp(10), alignItems: "center" }}>
+                        <AntDesign name="phone" size={20} color="gray" />
+                    </View>
+                    <Controller control={control} name='phone' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
+                        <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Telpon' placeholderTextColor={'gray'} />
+                    )} />
+                    {errors?.username && <FontAwesome name="exclamation" size={24} color="red" />}
+                </View>
+                <View className="px-6">
+                    <Text>Photo</Text>
+                    <TouchableOpacity onPress={pickImage} style={{ height: wp(25), width: wp(25), marginTop: 10 }} className="w-[110px] h-[110px]">
+                        <Image style={{ borderWidth: 1, height: wp(25), width: wp(25), borderColor: (errors.photoURL) ? COLORS.RED : COLORS.PRIMARY }}
+                            className="w-[110px] h-[110px] rounded-md" source={image ? ({ uri: image }) : require('../../../../assets/images/img.jpg')} />
+                    </TouchableOpacity>
+                </View>
+
                 {/* <View style={{ flexDirection: "row", borderWidth: errors.password ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
                         <Octicons name="lock" size={24} color="gray" />
@@ -103,27 +150,22 @@ const UserEdit = () => {
                         </View>
                         <Controller control={control} name='level' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
                             <Dropdown style={{ flex: 1, height: 50, }}
-                                data={dataLevel} search maxHeight={300}
-                                labelField="label" valueField="value"
-                                placeholder="Select item"
-                                searchPlaceholder="Search..."
-                                value={value}
-                                onChange={item => {
-                                    onChange(item.value);
-                                }} />
+                                data={dataLevel} search maxHeight={300} labelField="label" valueField="value"
+                                placeholder="Select item" searchPlaceholder="Search..." value={value}
+                                onChange={item => onChange(item.value)} />
                         )} />
                         {errors?.level && <FontAwesome name="exclamation" size={24} color="red" />}
                     </View>
                 }
 
                 <View style={{ marginTop: hp(2) }}>
-                    {isSubmitting ?
+                    {loading ?
                         <View style={{ flexDirection: "row", justifyContent: "center" }}>
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleUpdate)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius: 15 }}>
-                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Ubah user</Text>
+                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleUpdate)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.GUNMETAL, borderRadius: 15, alignSelf: "flex-start", paddingHorizontal: wp(4) }}>
+                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2) }} className="text-white font-bold tracking-wider">Update Profil</Text>
                         </TouchableOpacity>
                     }
                 </View>

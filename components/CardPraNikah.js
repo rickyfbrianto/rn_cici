@@ -1,38 +1,42 @@
 import { View, Text, Pressable, SectionList, ActivityIndicator, RefreshControl, StyleSheet } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import { COLORS } from '../constants/Colors'
 import { Ionicons, EvilIcons, AntDesign } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ConvertDataToSection, addWeeks, getYearMonthDay } from '../constants/Function'
-import { deleteDoc, doc, endAt, getDocs, orderBy, query, startAt } from 'firebase/firestore'
-import { db, nikahCol } from '../firebaseConfig'
+import { ConvertDataToSection, addWeeks, dynamicSortMultiple, getYearMonthDay } from '../constants/Function'
+import { deleteDoc, doc, endAt, getDocs, query, startAt } from 'firebase/firestore'
+import { db, pranikahCol } from '../firebaseConfig'
 import { Kategori } from '../constants/Constant'
 import { useAuth } from '../context/authContext'
 import { Popup } from 'react-native-popup-confirm-toast'
 import { Swipeable } from 'react-native-gesture-handler'
 
-const name = "nikah"
+const name = "pranikah"
 const colorBase = Kategori[name].color
 
-const NikahCard = ({ style, showControl = false }) => {
+const PraNikahCard = ({ style, showControl = false }) => {
     const [refresh, setRefresh] = useState(false)
     const tanggal = getYearMonthDay(new Date())
 
     const dataQuery = useQuery({
-        queryKey: ['nikahList'],
+        queryKey: ['pranikahList'],
         queryFn: async () => {
-            const queryRef = query(nikahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))))
+            // const queryRef = query(pranikahCol, startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))))
+            const queryRef = query(pranikahCol)
             const querySnap = await getDocs(queryRef)
             let temp = []
-            querySnap.forEach(v => {
-                temp.push({ ...v.data(), id: v?.id })
-            })
-            return temp
+            querySnap.forEach(v => temp.push({ ...v.data(), id: v?.id }))
+            return temp.sort(dynamicSortMultiple("tanggal desc", "jam desc"))
         },
     })
-    dataQuery.refetch()
+
+    useFocusEffect(
+        useCallback(() => {
+            dataQuery.refetch()
+        }, [])
+    )
 
     const handleRefresh = () => {
         setRefresh(true)
@@ -51,7 +55,7 @@ const NikahCard = ({ style, showControl = false }) => {
                 </View>
                 :
                 <>
-                    {dataQuery.data.length > 0
+                    {dataQuery.data?.length > 0
                         ?
                         <SectionList sections={ConvertDataToSection({ val: dataQuery.data, sort: "jam" })} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
                             refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
@@ -83,7 +87,7 @@ const CardItem = ({ item, showControl }) => {
     const { user } = useAuth()
     const ref = doc(db, `${name}/${item.id}`)
 
-    const closeSwipable = (() => swipeRef?.current?.close())()
+    const closeSwipable = () => swipeRef?.current?.close()
 
     const handleDelete = async () => {
         Popup.show({
@@ -152,4 +156,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default NikahCard
+export default PraNikahCard

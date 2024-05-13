@@ -36,7 +36,7 @@ const IbadahCard = ({ style, batas, showControl = false }) => {
             return temp
         },
     })
-    
+
     dataQuery.refetch()
 
     const handleRefresh = () => {
@@ -57,11 +57,11 @@ const IbadahCard = ({ style, batas, showControl = false }) => {
                 :
                 <>
                     {dataQuery.data.length > 0
-                        ? <SectionList sections={ConvertDataToSection({val:dataQuery.data, sort: "jam"})} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
+                        ? <SectionList sections={ConvertDataToSection({ val: dataQuery.data, sort: "jam" })} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
                             refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
                             renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
                             renderSectionHeader={({ section }) => (
-                                <View style={{ flexDirection:"row", justifyContent:"flex-start", alignItems:"flex-end", columnGap:wp(2), padding: 10, backgroundColor: colorBase, borderRadius: 10, ...style }}>
+                                <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", columnGap: wp(2), padding: 10, backgroundColor: colorBase, borderRadius: 10, ...style }}>
                                     <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
                                         <Text className={`text-white`} style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>{section.tanggal.split(", ")[0]}</Text>
                                         <Text className={`text-white`} style={{ fontFamily: "outfit", fontSize: hp(2) }}>{section.tanggal.split(", ")[1]}</Text>
@@ -110,7 +110,7 @@ const CardItem = ({ item, showControl }) => {
     const LeftSwipe = () => {
         return (
             <>
-                {user && showControl &&
+                {user && user?.level == "admin" && showControl &&
                     <View style={{ justifyContent: "center", marginEnd: 10 }}>
                         <View style={{ flexDirection: "row", columnGap: 10, width: 100, height: 50, marginVertical: 8 }}>
                             <Pressable style={{ ...styles.leftButtonAction, backgroundColor: "#f5e960" }} onPress={() => handleEdit(item.id)}>

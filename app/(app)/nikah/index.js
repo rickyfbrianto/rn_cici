@@ -35,7 +35,7 @@ const index = () => {
                     <CardNikah style={{ backgroundColor: colorBase }} showControl={true} />
                 </View>
             </View>
-            {user &&
+            {user && user?.level == "admin" &&
                 <SpeedDial
                     color={colorBase}
                     isOpen={page.openSpeedDial}

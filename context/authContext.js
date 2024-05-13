@@ -14,9 +14,7 @@ export const AuthContextProvider = ({ children }) => {
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
             let data = docSnap.data();
-            setUser(prev => (
-                { username: data.username, userId: data.userId, level: data.level }
-            ))
+            setUser({ id: docSnap.id, ...data })
         }
     }
 
@@ -58,6 +56,7 @@ export const AuthContextProvider = ({ children }) => {
             const respons = await createUserWithEmailAndPassword(auth, email, password)
 
             await setDoc(doc(db, "users", respons?.user?.uid), {
+                email,
                 username,
                 userId: respons?.user?.uid,
                 level: "user"

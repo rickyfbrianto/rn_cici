@@ -52,7 +52,7 @@ const CardBaptis = ({ style, batas, showControl = false }) => {
                 :
                 <>
                     {dataQuery.data.length > 0
-                        ? <SectionList sections={ConvertDataToSection({val: dataQuery.data, sort:"jam"})} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
+                        ? <SectionList sections={ConvertDataToSection({ val: dataQuery.data, sort: "jam" })} showsVerticalScrollIndicator={false} keyExtractor={(item, index) => item + index}
                             refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
                             renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
                             renderSectionHeader={({ section }) => (
@@ -107,7 +107,7 @@ const CardItem = ({ item, showControl }) => {
     const LeftSwipe = () => {
         return (
             <>
-                {user && showControl &&
+                {user && user?.level == "admin" && showControl &&
                     <View style={{ justifyContent: "center", marginEnd: 10 }}>
                         <View style={{ flexDirection: "row", columnGap: 10, width: 100, height: 50, marginVertical: 8 }}>
                             <Pressable style={{ ...styles.leftButtonAction, backgroundColor: "#f5e960" }} onPress={() => handleEdit(item.id)}>
