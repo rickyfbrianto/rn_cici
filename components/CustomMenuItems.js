@@ -9,7 +9,7 @@ export const MenuItem = ({ text, action, value, icon }) => {
 
   return (
     <MenuOption onSelect={() => action(value)}>
-      <View className="flex-row justify-between p-2">
+      <View className="flex flex-row justify-between p-2">
         <Text style={{ fontSize: hp(2) }} className="font-semibold text-gray-500">{text}</Text>
         {icon}
       </View>

@@ -27,9 +27,7 @@ export default HomeHeader = () => {
 
     const handleProfile = () => router.push({ pathname: `users/edit/[id_edit]`, params: { id_edit: user.userId } });
     const handleLogout = () => {
-        setTimeout(async () => {
-            await logout()
-        }, 500)
+        setTimeout(async () => await logout(), 500)
     };
 
     const SudahLogin = () => {
@@ -73,7 +71,7 @@ export default HomeHeader = () => {
     }
 
     return (
-        <View style={{ backgroundColor: COLORS.PRIMARY, paddingTop: top, borderBottomLeftRadius: 30, borderBottomRightRadius: 30 }} className={`justify-center items-start px-5 h-[120px]`}>
+        <View style={{ backgroundColor: COLORS.PRIMARY, paddingTop: top }} className={`justify-center items-start px-5 h-[120px] rounded-b-[30]`}>
             {user ? <SudahLogin /> : <BelumLogin />}
         </View >
     )

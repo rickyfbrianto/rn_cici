@@ -3,9 +3,8 @@ import { Slot, Stack, useRouter, useSegments } from "expo-router"
 import { AuthContextProvider, useAuth } from "../context/authContext"
 import { MenuProvider } from 'react-native-popup-menu';
 import { useFonts } from 'expo-font';
-import "../global.css"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {Root as PopupRootProvider} from 'react-native-popup-confirm-toast';
+import { Root as PopupRootProvider } from 'react-native-popup-confirm-toast';
 
 const MainLayout = () => {
     const { isAuthenticated } = useAuth()

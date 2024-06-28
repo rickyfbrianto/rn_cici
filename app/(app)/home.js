@@ -7,11 +7,11 @@ import { COLORS } from '../../constants/Colors'
 
 const Home = () => {
     return (
-        <View className="" style={{ marginTop: hp(2), flex: 1 }}>
-            <View style={{ paddingHorizontal: hp(2) }}>
+        <View className="flex-1 mt-4">
+            <View className="px-4" >
                 <KategoriFilter />
-            </View>
-            <View style={{ paddingHorizontal: hp(2), paddingVertical: hp(2), flex: 1, backgroundColor: "#f7f3e3", borderTopRightRadius: 50, }}>
+            </View >
+            <View className="flex-1  p-4 bg-[#f7f3e3]">
                 <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.6), color: "gray" }}>Jadwal Ibadah</Text>
                 <View style={{ borderBottomWidth: 1, marginVertical: hp(1), borderColor: "gray" }} />
                 <CardIbadah batas={3} style={{ backgroundColor: COLORS.CHARCOAL }} />
