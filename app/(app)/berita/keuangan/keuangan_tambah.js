@@ -1,34 +1,29 @@
 import * as ImagePicker from 'expo-image-picker';
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { COLORS } from '../../../constants/Colors';
-import { db } from '../../../firebaseConfig';
-import CustomKeyboard from '../../../components/CustomKeyboard';
-import { Hari } from '../../../constants/Constant';
+import { COLORS } from '../../../../constants/Colors';
+import { db } from '../../../../firebaseConfig';
+import CustomKeyboard from '../../../../components/CustomKeyboard';
+import { Hari } from '../../../../constants/Constant';
 import { doc, setDoc } from 'firebase/firestore';
 import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from 'expo-router'
-import { Image } from 'react-native';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
-const BeritaTambah = () => {
-    const name = "berita"
+const BeritaKeuanganTambah = () => {
     const [loading, setLoading] = useState(null)
-    const { control, reset, watch, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
+    const { control, reset, watch, handleSubmit, setValue, formState: { errors } } = useForm({
         defaultValues: {
-            judul: null, desc: null, hari: null, tanggal: null, jam: null, lokasi: null, image: null
+            judul: null, hari: null, tanggal: null, image: null
         }
     })
     const watchImage = watch("image")
-    const [DTPicker, setDTPicker] = useState({
-        tanggal: false,
-        jam: false,
-    })
+    const [DTPicker, setDTPicker] = useState({ tanggal: false })
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -40,7 +35,7 @@ const BeritaTambah = () => {
         if (!result.canceled) setValue("image", result.assets[0].uri)
     };
 
-    const handleHari = (event, selectedDate) => {
+    const handleHari = (e, selectedDate) => {
         const currentDate = selectedDate || new Date()
         let tempDate = new Date(currentDate)
         let fDate = tempDate.getUTCFullYear() + "-" + ('0' + (tempDate.getMonth() + 1)).slice(-2) + "-" + ('0' + tempDate.getDate()).slice(-2)
@@ -50,36 +45,29 @@ const BeritaTambah = () => {
         setValue("hari", fDay)
     }
 
-    const handleJam = (event, selectedDate) => {
-        const currentDate = selectedDate || new Date()
-        let tempDate = new Date(currentDate)
-        let fTime = ('0' + tempDate.getHours()).slice(-2) + "." + ('0' + tempDate.getMinutes()).slice(-2)
-        setDTPicker(prev => ({ ...prev, jam: false }))
-        setValue("jam", fTime)
-    }
-
     const handleAdd = async (data) => {
         try {
             setLoading(true)
-            const id_berita = "NEWS-" + Date.now()
+            const id_berita = "NEWS-FINANCE-" + Date.now()
 
             const res = await fetch(watchImage)
             const blob = await res.blob()
             const storage = getStorage();
-            const storageRef = ref(storage, 'berita/' + id_berita + ".jpg");
+            const storageRef = ref(storage, 'berita_keuangan/' + id_berita + ".jpg");
             uploadBytes(storageRef, blob).then(() => {
                 getDownloadURL(storageRef).then(async url => {
                     data.image = url
-                    await setDoc(doc(db, "berita", id_berita), data)
+                    await setDoc(doc(db, "berita_keuangan", id_berita), data)
                         .then(() => {
                             reset()
-                            Toast.show({ type: 'success', text1: 'Berhasil', text2: `Berita berhasil ditambah` })
+                            Toast.show({ type: 'success', text1: 'Berhasil', text2: `Berita Keuangan berhasil ditambah` })
                         })
                         .catch(err => Toast.show({ type: 'error', text1: 'Gagal', text2: err.message }))
                         .finally(() => setLoading(false))
                 })
             })
         } catch (error) {
+            setLoading(false)
             Toast.show({ type: 'error', text1: 'Gagal', text2: error.message });
         }
     }
@@ -87,9 +75,8 @@ const BeritaTambah = () => {
     return (
         <CustomKeyboard>
             <View style={{ padding: 20, rowGap: 10 }} >
-                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan {name} baru</Text>
+                <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">Masukkan Berita baru</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
-
                 <View style={{ flexDirection: "row", borderWidth: errors.judul ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
                         <MaterialIcons name="title" size={24} color="gray" />
@@ -98,15 +85,6 @@ const BeritaTambah = () => {
                         <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Judul berita' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.judul && <FontAwesome name="exclamation" size={24} color="red" />}
-                </View>
-                <View style={{ flexDirection: "row", borderWidth: errors.desc ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
-                    <View style={{ width: wp(10), alignItems: "center" }}>
-                        <MaterialIcons name="description" size={24} color="gray" />
-                    </View>
-                    <Controller control={control} name='desc' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Deskripsi' placeholderTextColor={'gray'} />
-                    )} />
-                    {errors?.desc && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
                 <Pressable onPress={() => setDTPicker(prev => ({ ...prev, tanggal: true }))} style={{ flexDirection: "row", borderWidth: errors.tanggal ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>
@@ -123,46 +101,24 @@ const BeritaTambah = () => {
                     )} />
                     {errors?.tanggal && <FontAwesome name="exclamation" size={24} color="red" />}
                 </Pressable>
-                <Pressable onPress={() => setDTPicker(prev => ({ ...prev, jam: true }))} style={{ flexDirection: "row", borderWidth: errors.jam ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
-                    <View style={{ width: wp(10), alignItems: "center" }}>
-                        <FontAwesome name="clock-o" size={24} color="gray" />
-                    </View>
-                    <Controller control={control} name='jam' render={({ field: { onChange, value } }) => (
-                        <View>
-                            {DTPicker.jam && <DateTimePicker mode='time' is24Hour={true} value={new Date()} display='default' onChange={handleJam} />}
-                            <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value}
-                                onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Jam' placeholderTextColor={'gray'} />
-                        </View>
-                    )} />
-                    {errors?.jam && <FontAwesome name="exclamation" size={24} color="red" />}
-                </Pressable>
-                <View style={{ flexDirection: "row", borderWidth: errors.lokasi ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
-                    <View style={{ width: wp(10), alignItems: "center" }}>
-                        <FontAwesome name="location-arrow" size={24} color="gray" />
-                    </View>
-                    <Controller control={control} name='lokasi' render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
-                    )} />
-                    {errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
-                </View>
                 <View className="flex-row items-center rounded-lg p-4 bg-white">
                     <Text>Banner</Text>
                     <Controller control={control} name='image' rules={{ required: { value: true } }} render={({ field }) => (
                         <TouchableOpacity onPress={pickImage} style={{ height: wp(25), width: wp(25), marginTop: 10 }} className="ml-4 w-[110px] h-[110px]">
                             <Image style={{ borderWidth: 1, height: wp(25), width: wp(25), borderColor: (errors.photoURL) ? COLORS.RED : COLORS.PRIMARY }}
-                                className="w-[110px] h-[110px] rounded-md" source={field.value ? ({ uri: field.value }) : require('../../../assets/images/img.jpg')} />
+                                // className="w-[110px] h-[110px] rounded-md" source={image ? ({ uri: image }) : require('../../../../assets/images/img.jpg')} />
+                                className="w-[110px] h-[110px] rounded-md" source={field.value ? ({ uri: field.value }) : require('../../../../assets/images/img.jpg')} />
                         </TouchableOpacity>
                     )} />
                 </View>
-
                 <View style={{ marginTop: hp(2) }}>
-                    {isSubmitting ?
+                    {loading ?
                         <View style={{ flexDirection: "row", justifyContent: "center" }}>
                             <ActivityIndicator size='large' color={COLORS.TEAL} />
                         </View>
                         :
-                        <TouchableOpacity disabled={isSubmitting} onPress={handleSubmit(handleAdd)} style={{ justifyContent: "center", alignItems: "center", height: hp(7), backgroundColor: COLORS.TEAL, borderRadius: 15 }}>
-                            <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.5) }} className="text-white font-bold tracking-wider">Buat {name}</Text>
+                        <TouchableOpacity className="flex justify-center items-center rounded-lg self-start px-4" disabled={loading} onPress={handleSubmit(handleAdd)} style={{ height: hp(7), backgroundColor: COLORS.TEAL }}>
+                            <Text className="text-[14px] text-white font-bold" style={{ fontFamily: "outfit-bold" }}>Buat Berita Keuangan</Text>
                         </TouchableOpacity>
                     }
                 </View>
@@ -172,4 +128,4 @@ const BeritaTambah = () => {
     )
 }
 
-export default BeritaTambah
+export default BeritaKeuanganTambah

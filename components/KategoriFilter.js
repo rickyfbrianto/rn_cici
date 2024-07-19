@@ -14,7 +14,7 @@ const KategoriFilter = () => {
 
     return (
         <View style={{ marginBottom: hp(2) }}>
-            <Text className="text-red-200" style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>Menu</Text>
+            <Text className="text-slate-400" style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>Menu</Text>
             <Text style={{ fontFamily: "outfit", fontSize: hp(2.2) }}>Kategori dibagi menjadi beberapa form</Text>
             <FlatList keyExtractor={(item, index) => index} showsHorizontalScrollIndicator={false} horizontal
                 contentContainerStyle={{ columnGap: wp(3), marginVertical: hp(2), paddingHorizontal: wp(2) }} data={data} renderItem={({ item, index }) => <KategoriItem index={index} item={item} />} />

@@ -98,7 +98,7 @@ const CardItem = ({ item, showControl }) => {
             <>
                 {user && user?.level == "admin" && showControl &&
                     <View style={{ justifyContent: "center", marginEnd: 10, marginTop: 10 }}>
-                        <View style={{ flexDirection: "row", columnGap: 10, width: 100, height: 50, marginVertical: 8 }}>
+                        <View style={{ flexDirection: "row", columnGap: 10, width: 120, height: 50, marginVertical: 8 }}>
                             <Pressable style={{ ...styles.leftButtonAction, backgroundColor: "#f5e960" }} onPress={() => handleEdit(item.id)}>
                                 <AntDesign name="edit" size={16} color="blue" />
                             </Pressable>

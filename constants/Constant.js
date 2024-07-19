@@ -15,7 +15,7 @@ export const AyatNikah = [
 export const Kategori = {
     "ibadah": { nama: "Ibadah", link: "ibadah", color: "#94a89a", img: require('../assets/images/pray.png') },
     "baptis": { nama: "Baptisan", link: "baptis", color: "#1c5253", img: require('../assets/images/baptis.png') },
-    "pranikah": { nama: "Pra Nikah", link: "pranikah", color: "#cf8ba3", img: require('../assets/images/pranikah.png') },
+    // "pranikah": { nama: "Pra Nikah", link: "pranikah", color: "#cf8ba3", img: require('../assets/images/pranikah.png') },
     "nikah": { nama: "Pernikahan", link: "nikah", color: "#ce5374", img: require('../assets/images/nikah.png') },
     "users": { nama: "User", link: "users", color: "#2f4858" },
     "berita": { nama: "Berita", link: "berita", color: "#2f4858" },

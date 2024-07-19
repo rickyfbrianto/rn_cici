@@ -9,6 +9,12 @@ module.exports = {
   ],
   theme: {
     extend: {},
+
+    // fontFamily: {
+    //   'outfit': ['Oswald'],
+    //   'body': ['"Open Sans"'],
+    // }
+
   },
   plugins: [],
 }
