@@ -4,7 +4,7 @@
     "slug": "rn-cici",
     "version": "1.0.26",
     "orientation": "portrait",
-    "icon": "./assets/images/welcome.jpg",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
