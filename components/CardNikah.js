@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { router } from "expo-router";
 import { COLORS } from "../constants/Colors";
-import { Ionicons, EvilIcons, AntDesign } from "@expo/vector-icons";
+import { Ionicons, EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ConvertDataToSection, addWeeks, getYearMonthDay } from "../constants/Function";
 import { deleteDoc, doc, endAt, getDocs, orderBy, query, startAt } from "firebase/firestore";
@@ -29,9 +29,7 @@ const NikahCard = ({ style, showControl = false }) => {
 			const queryRef = query(nikahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
 			const querySnap = await getDocs(queryRef);
 			let temp = [];
-			querySnap.forEach((v) => {
-				temp.push({ ...v.data(), id: v?.id });
-			});
+			querySnap.forEach((v) => temp.push({ ...v.data(), id: v?.id }));
 			return temp;
 		},
 	});
@@ -58,7 +56,7 @@ const NikahCard = ({ style, showControl = false }) => {
 							refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
 							renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
 							renderSectionHeader={({ section }) => (
-								<View className="flex-row justify-start items-end mt-3 gap-x-3 p-3 rounded-2xl" style={{ backgroundColor: colorBase, borderRadius: 10, ...style }}>
+								<View className="flex-row justify-start items-end mt-3 p-3 rounded-2xl" style={{ backgroundColor: colorBase, borderRadius: 10, ...style }}>
 									<View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
 										<Text className={`text-white`} style={{ fontFamily: "outfit", fontSize: hp(2) }}>
 											{section.tanggal.split(", ")[0]}
@@ -132,26 +130,33 @@ const CardItem = ({ item, showControl }) => {
 
 	return (
 		<Swipeable ref={swipeRef} renderLeftActions={LeftSwipe}>
-			<Pressable
-				onPress={() => {
-					router.push(`${name}/${item.id}`);
-				}}
-				key={item.id}
-				className={`flex-row justify-between items-center gap-x-3 my-2 bg-slate-200 p-5 rounded-2xl`}>
-				<View style={{ flexDirection: "column", rowGap: hp(1) }}>
-					<View className="flex-row justify-start items-center gap-x-1">
-						<Ionicons name="man-sharp" size={22} color={colorBase} />
-						<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>{item.pria}</Text>
+			<Pressable onPress={() => router.push(`${name}/${item.id}`)} key={item.id} className={`flex-row items-center my-2 bg-slate-200 p-5 rounded-2xl`}>
+				<View style={{ rowGap: 8 }} className="flex-1">
+					<View className="flex-row justify-between pb-2 border-b-[1px] border-slate-300">
+						<View className="flex-row items-center gap-x-1">
+							<MaterialCommunityIcons name="church" size={20} color="black" />
+							<Text className="text-[14px] uppercase" style={{ fontFamily: "outfit" }}>
+								{item.lokasi}
+							</Text>
+						</View>
+
+						<View className="flex-row gap-x-1">
+							<EvilIcons name="clock" size={20} color="black" />
+							<Text className="text-[14px]" style={{ fontFamily: "outfit" }}>
+								{item.jam}
+							</Text>
+						</View>
 					</View>
-					<View className="flex-row justify-start items-center gap-x-1">
-						<Ionicons name="woman-sharp" size={22} color={colorBase} />
-						<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>{item.wanita}</Text>
-					</View>
-				</View>
-				<View style={{ flexDirection: "column" }}>
-					<View className="flex-row gap-x-1">
-						<EvilIcons name="clock" size={24} color="black" />
-						<Text style={{ fontFamily: "outfit", fontSize: hp(2) }}>{item.jam}</Text>
+
+					<View style={{ flexDirection: "column", rowGap: 5 }}>
+						<View className="flex-row justify-start items-center gap-x-1">
+							<Ionicons name="man-sharp" size={22} color={colorBase} />
+							<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>{item.pria}</Text>
+						</View>
+						<View className="flex-row justify-start items-center gap-x-1">
+							<Ionicons name="woman-sharp" size={22} color={colorBase} />
+							<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2) }}>{item.wanita}</Text>
+						</View>
 					</View>
 				</View>
 			</Pressable>

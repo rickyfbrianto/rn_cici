@@ -57,7 +57,7 @@ const CardBaptis = ({ style, batas, showControl = false }) => {
 							refreshControl={<RefreshControl refreshing={refresh} onRefresh={handleRefresh} />}
 							renderItem={({ item }) => <CardItem item={item} showControl={showControl} />}
 							renderSectionHeader={({ section }) => (
-								<View className="flex-row justify-start items-end mt-3 gap-x-3 p-3 rounded-2xl" style={{ backgroundColor: colorBase, borderRadius: 10, ...style }}>
+								<View className="flex-row justify-start items-end mt-3 p-3 rounded-2xl" style={{ backgroundColor: colorBase, borderRadius: 10, ...style }}>
 									<View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
 										<Text className={`text-white`} style={{ fontFamily: "outfit", fontSize: hp(2) }}>
 											{section.tanggal.split(", ")[0]}
@@ -133,15 +133,9 @@ const CardItem = ({ item, showControl }) => {
 
 	return (
 		<Swipeable ref={swipeRef} renderLeftActions={LeftSwipe}>
-			<Pressable
-				onPress={() => {
-					router.push(`${name}/${item.id}`);
-				}}
-				key={item.id}
-				style={{ position: "relative" }}
-				className="flex-row items-center gap-x-3 my-2 bg-white p-3 rounded-3xl">
-				<Image style={{ height: 100, width: 100 }} source={require("../assets/images/welcome.jpg")} />
-				<View>
+			<Pressable onPress={() => router.push(`${name}/${item.id}`)} key={item.id} style={{ position: "relative" }} className="flex-row items-center my-2 bg-white p-3 rounded-xl">
+				<Image style={{ height: 75, width: 75 }} source={require("../assets/images/icon.png")} />
+				<View className="ml-4">
 					<View style={{ flexDirection: "row", alignItems: "center" }}>
 						<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.6) }}>{item.judul}</Text>
 					</View>
