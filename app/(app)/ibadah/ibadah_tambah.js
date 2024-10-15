@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView, ToastAndroid } from "react-native";
 import React, { useState } from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { FontAwesome, MaterialIcons, MaterialCommunityIcons, Entypo, Ionicons, AntDesign, Feather } from "@expo/vector-icons";
@@ -21,7 +21,7 @@ const IbadahTambah = () => {
 			jam: null,
 			pdt: null,
 			lokasi: null,
-			wl: [{ value: "tes" }],
+			wl: [{ value: "" }],
 			singer: [{ value: "" }],
 			musik: [{ value: "" }],
 			mm: [{ value: "" }],
@@ -43,6 +43,8 @@ const IbadahTambah = () => {
 
 	const handleAdd = async (data) => {
 		try {
+			ToastAndroid.show("Jadwal ibadah berhasil ditambah", ToastAndroid.SHORT)
+			return
 			const id_ibadah = "IBD-" + Date.now();
 			await setDoc(doc(db, "ibadah", id_ibadah), data)
 				.then(() => {

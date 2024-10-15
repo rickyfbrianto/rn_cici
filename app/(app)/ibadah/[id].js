@@ -37,7 +37,6 @@ const IbadahDetail = () => {
 
 	useFocusEffect(
 		useCallback(() => {
-			console.log(dataQuery.data);
 			dataQuery.refetch();
 		}, [])
 	);

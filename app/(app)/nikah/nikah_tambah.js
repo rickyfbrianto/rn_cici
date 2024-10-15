@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView, ToastAndroid } from "react-native";
 import React, { useState } from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { FontAwesome, Ionicons, Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -103,7 +103,7 @@ const NikahTambah = () => {
 	return (
 		<CustomKeyboard>
 			<ScrollView>
-				<View style={{ padding: 20, rowGap: 10 }}>
+				<View className="flex-1 pb-[100px]" style={{ flex:1, padding: 20, rowGap: 10, }}>
 					<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold text-neutral-500">
 						Masukkan jadwal nikah
 					</Text>
@@ -130,9 +130,6 @@ const NikahTambah = () => {
 						<View style={{ width: wp(10), alignItems: "center" }}>
 							<FontAwesome name="calendar-o" size={24} color="gray" />
 						</View>
-						{/* <Controller control={control} name='tanggal_lahir_pria' rules={{ required: { value: true } }} render={({ field }) => (
-                        <TextInput style={{ fontSize: hp(2) }} editable={false} {...field} className="font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
-                    )} /> */}
 						<Controller
 							control={control}
 							name="tanggal_lahir_pria"

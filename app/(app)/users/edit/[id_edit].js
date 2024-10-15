@@ -23,7 +23,7 @@ const UserEdit = () => {
     const { user, updateUserData } = useAuth()
     const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
-            username: "", phone: ""
+            username: "", phone: "", nama:""
         }
     })
     const [image, setImage] = useState(null)
@@ -41,6 +41,7 @@ const UserEdit = () => {
             const querySnap = await getDoc(queryRef)
             const data = querySnap.data()
             setValue("username", data.username)
+            setValue("nama", data?.nama ?? "")
             setValue("phone", data.phone)
             setValue("level", data.level)
             setImage(data.photoURL)
@@ -116,6 +117,15 @@ const UserEdit = () => {
                         <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Username' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.username && <FontAwesome name="exclamation" size={24} color="red" />}
+                </View>
+                <View style={{ flexDirection: "row", borderWidth: errors.username ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+                    <View style={{ width: wp(10), alignItems: "center" }}>
+                        <AntDesign name="user" size={20} color="gray" />
+                    </View>
+                    <Controller control={control} name='nama' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
+                        <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Nama' placeholderTextColor={'gray'} />
+                    )} />
+                    {errors?.nama && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
                 <View style={{ flexDirection: "row", borderWidth: errors.phone ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>

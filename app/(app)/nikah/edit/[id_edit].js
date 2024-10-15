@@ -127,11 +127,11 @@ const NikahEdit = () => {
 
 	return (
 		<CustomKeyboard>
-			<ScrollView>
-				{dataQuery.isFetching ? (
-					<IsFetching />
-				) : (
-					<View style={{ padding: 20, rowGap: 10 }}>
+			{dataQuery.isFetching ? (
+				<IsFetching />
+			) : (
+				<ScrollView>
+					<View className="p-4" style={{ rowGap: 10 }}>
 						<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold text-neutral-500">
 							Masukkan jadwal nikah
 						</Text>
@@ -158,13 +158,7 @@ const NikahEdit = () => {
 							<View style={{ width: wp(10), alignItems: "center" }}>
 								<FontAwesome name="calendar-o" size={24} color="gray" />
 							</View>
-							{/* <Controller control={control} name='tanggal_lahir_pria' rules={{ required: { value: true } }} render={({ field }) => (
-                        <TextInput style={{ fontSize: hp(2) }} editable={false} {...field} className="font-semibold text-neutral-500" placeholder='Hari' placeholderTextColor={'gray'} />
-                    )} /> */}
-							<Controller
-								control={control}
-								name="tanggal_lahir_pria"
-								rules={{ required: { value: true } }}
+							<Controller control={control} name="tanggal_lahir_pria" rules={{ required: { value: true } }}
 								render={({ field }) => (
 									<View className="flex-1">
 										{DTPicker.tanggal_lahir_pria && <DateTimePicker mode="date" value={new Date()} display="default" onChange={handleTanggalLahirPria} />}
@@ -315,8 +309,8 @@ const NikahEdit = () => {
 						</View>
 						<Toast />
 					</View>
-				)}
-			</ScrollView>
+				</ScrollView>
+			)}
 		</CustomKeyboard>
 	);
 };
