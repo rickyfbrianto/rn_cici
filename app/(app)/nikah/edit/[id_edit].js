@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ToastAndroid } from "react-native";
 import React, { useState } from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { FontAwesome, Ionicons, Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -19,17 +19,7 @@ import IsFetching from "../../../../components/IsFetching";
 const NikahEdit = () => {
 	const { id_edit } = useLocalSearchParams();
 	const name = "nikah";
-	// const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({defaultValues:{
-	//     pria:null, wanita:null, hari:null, tanggal:null, jam:null, pdt:null, lokasi:null
-	// }})
-	const {
-		control,
-		reset,
-		handleSubmit,
-		clearErrors,
-		setValue,
-		formState: { errors, isSubmitting },
-	} = useForm({
+	const {control, reset, handleSubmit, clearErrors, setValue, formState: { errors, isSubmitting }} = useForm({
 		defaultValues: {
 			pria: null,
 			tempat_lahir_pria: null,
@@ -50,10 +40,6 @@ const NikahEdit = () => {
 		},
 	});
 
-	// const [DTPicker, setDTPicker] = useState({
-	// 	tanggal: false,
-	// 	jam: false,
-	// });
 	const [DTPicker, setDTPicker] = useState({
 		tanggal: false,
 		jam: false,
@@ -77,7 +63,7 @@ const NikahEdit = () => {
 			const queryRef = doc(db, name, id_edit);
 			await updateDoc(queryRef, data)
 				.then(() => {
-					Toast.show({ type: "success", text1: "Berhasil", text2: `Jadwal ${name} berhasil diubah` });
+					ToastAndroid.show(`Jadwal ${name} berhasil diubah`, ToastAndroid.SHORT)
 				})
 				.catch((err) => {
 					Toast.show({ type: "error", text1: "Gagal", text2: err.message });
@@ -148,7 +134,6 @@ const NikahEdit = () => {
 						</View>
 						<View style={{ flexDirection: "row", borderWidth: errors.tempat_lahir_pria ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
 							<View style={{ width: wp(10), alignItems: "center" }}>
-								{/* <Ionicons name="man-sharp" size={24} color="gray" /> */}
 								<Entypo name="location" size={24} color="gray" />
 							</View>
 							<Controller control={control} name="tempat_lahir_pria" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder="Tempat Lahir Pria" placeholderTextColor={"gray"} />} />

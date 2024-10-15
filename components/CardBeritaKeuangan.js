@@ -51,8 +51,6 @@ const CardItem = ({ item, index, showControl }) => {
 	const { user } = useAuth();
 	const ref = doc(db, `berita_keuangan/${item.id}`);
 
-	const closeSwipable = () => swipeRef?.current?.close();
-
 	const handleDelete = async () => {
 		Popup.show({
 			type: "confirm",
@@ -61,7 +59,6 @@ const CardItem = ({ item, index, showControl }) => {
 			confirmText: "Batal",
 			buttonText: "Hapus",
 			callback: () => {
-				closeSwipable();
 				deleteDoc(ref).then(() => queryClient.invalidateQueries("usersList"));
 				Popup.hide();
 			},

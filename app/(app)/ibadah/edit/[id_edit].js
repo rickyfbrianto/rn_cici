@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView, ToastAndroid } from "react-native";
 import React, { useCallback, useState } from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { FontAwesome, Feather, Entypo, AntDesign, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -95,7 +95,7 @@ const IbadahEdit = () => {
 			const queryRef = doc(db, name, id_edit);
 			await updateDoc(queryRef, data)
 				.then(() => {
-					Toast.show({ type: "success", text1: "Berhasil", text2: `Jadwal ${name} berhasil diubah` });
+					ToastAndroid.show(`Jadwal ${name} berhasil diubah`, ToastAndroid.SHORT)
 				})
 				.catch((err) => {
 					Toast.show({ type: "error", text1: "Gagal", text2: err.message });

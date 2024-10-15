@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useQuery } from "@tanstack/react-query";
+import IsFetching from "../../../components/IsFetching";
 
 const BaptisDetail = () => {
 	const { id } = useLocalSearchParams();
@@ -40,15 +41,15 @@ const BaptisDetail = () => {
 						<FontAwesome name="arrow-circle-left" size={28} color="white" />
 					</Pressable>
 				</SafeAreaView>
-				{dataQuery.isFetching ? (
+				{dataQuery.isLoading ? (
 					<IsFetching />
 				) : (
 					<View className="flex-1 items-center bg-white" style={{ borderTopLeftRadius: hp(6), flex: 1, borderTopRightRadius: hp(6), marginTop: 100, paddingTop: 20 }}>
 						<Image source={require("../../../assets/images/welcome.jpg")} style={{ top: hp(-10), height: hp(20), width: wp(40), resizeMode: "stretch", position: "absolute", borderRadius: 20 }} />
-						<View className="w-full" style={{ marginTop: hp(10), paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: "teal" }}>
-							<Text style={{ fontFamily: "outfit-bold", fontSize: hp(3) }}>{dataQuery.data.judul}</Text>
-						</View>
 						<View className="flex-1 justify-center" style={{ marginTop: hp(2), width: "100%", paddingHorizontal: hp(2) }}>
+							<View className="w-full" style={{ marginTop: hp(10), paddingHorizontal: hp(2)}}>
+								<Text className="text-center underline" style={{ fontFamily: "outfit-bold", fontSize: hp(3) }}>{dataQuery.data.judul}</Text>
+							</View>
 							<View style={{ flexDirection: "row", alignItems: "center", borderBottomWidth: 2, borderBottomColor: COLORS.PRIMARY, columnGap: hp(2), marginHorizontal: hp(1), paddingHorizontal: hp(1), paddingVertical: hp(2) }}>
 								<View style={{ flexDirection: "row", justifyContent: "center", width: 30 }}>
 									<FontAwesome name="location-arrow" size={24} color="black" />
