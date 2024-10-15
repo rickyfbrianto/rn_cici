@@ -43,13 +43,12 @@ const IbadahTambah = () => {
 
 	const handleAdd = async (data) => {
 		try {
-			ToastAndroid.show("Jadwal ibadah berhasil ditambah", ToastAndroid.SHORT)
-			return
 			const id_ibadah = "IBD-" + Date.now();
 			await setDoc(doc(db, "ibadah", id_ibadah), data)
 				.then(() => {
 					form.reset();
-					Toast.show({ type: "success", text1: "Berhasil", text2: "Jadwal ibadah berhasil ditambah" });
+					ToastAndroid.show("Jadwal ibadah berhasil ditambah", ToastAndroid.SHORT)
+					// Toast.show({ type: "success", text1: "Berhasil", text2: "Jadwal ibadah berhasil ditambah" });
 				})
 				.catch((err) => {
 					Toast.show({ type: "error", text1: "Gagal", text2: err.message });
@@ -88,7 +87,7 @@ const IbadahTambah = () => {
 	return (
 		<CustomKeyboard>
 			<ScrollView>
-				<View style={{ padding: 20, rowGap: 10 }}>
+				<View className="flex-1" style={{ padding: 20, rowGap: 10 }}>
 					<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">
 						Masukkan informasi jadwal baru
 					</Text>

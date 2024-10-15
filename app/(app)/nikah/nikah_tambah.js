@@ -52,7 +52,8 @@ const NikahTambah = () => {
 			await setDoc(doc(db, "nikah", id_nikah), data)
 				.then(() => {
 					reset();
-					Toast.show({ type: "success", text1: "Berhasil", text2: "Jadwal nikah berhasil ditambah" });
+					ToastAndroid.show("Jadwal nikah berhasil ditambah", ToastAndroid.SHORT)
+					// Toast.show({ type: "success", text1: "Berhasil", text2: "Jadwal nikah berhasil ditambah" });
 				})
 				.catch((err) => {
 					Toast.show({ type: "error", text1: "Gagal", text2: err.message });
@@ -103,7 +104,7 @@ const NikahTambah = () => {
 	return (
 		<CustomKeyboard>
 			<ScrollView>
-				<View className="flex-1 pb-[100px]" style={{ flex:1, padding: 20, rowGap: 10, }}>
+				<View className="flex-1 " style={{ flex:1, padding: 20, rowGap: 10, }}>
 					<Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold text-neutral-500">
 						Masukkan jadwal nikah
 					</Text>

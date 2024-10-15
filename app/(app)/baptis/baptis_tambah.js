@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -30,7 +30,8 @@ const BaptisTambah = () => {
             await setDoc(doc(db, "baptis", id_baptis), data)
                 .then(() => {
                     reset()
-                    Toast.show({ type: 'success', text1: 'Berhasil', text2: 'Jadwal baptis berhasil ditambah' });
+                    ToastAndroid.show("Jadwal baptis berhasil ditambah", ToastAndroid.SHORT)
+                    // Toast.show({ type: 'success', text1: 'Berhasil', text2: 'Jadwal baptis berhasil ditambah' });
                 })
                 .catch(err => {
                     Toast.show({ type: 'error', text1: 'Gagal', text2: err.message });
