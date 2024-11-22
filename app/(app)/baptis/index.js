@@ -6,7 +6,6 @@ import { router } from "expo-router";
 import { SpeedDial } from "@rneui/themed";
 import CardBaptis from "../../../components/CardBaptis";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Kategori } from "../../../constants/Constant";
 import BackButtonHeader from "../../../components/BackButtonHeader";
 import { useAuth } from "../../../context/authContext";
 

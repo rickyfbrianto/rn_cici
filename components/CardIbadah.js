@@ -25,8 +25,9 @@ const IbadahCard = ({ style, batas, showControl = false }) => {
 	const dataQuery = useQuery({
 		queryKey: ["ibadahList"],
 		queryFn: async () => {
-			const queryRef = batas != undefined ? query(ibadahCol, orderBy("tanggal"), limit(batas), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1)))) : query(ibadahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
 			// const queryRef = query(ibadahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))))
+			// const queryRef = batas != undefined ? query(ibadahCol, orderBy("tanggal"), limit(batas), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1)))) : query(ibadahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
+			const queryRef = batas != undefined ? query(ibadahCol, orderBy("tanggal"), limit(batas), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1)))) : query(ibadahCol, orderBy("tanggal"), startAt(tanggal));
 			const querySnap = await getDocs(queryRef);
 			let temp = [];
 			querySnap.forEach((v) => {

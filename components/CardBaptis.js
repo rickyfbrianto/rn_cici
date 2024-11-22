@@ -25,7 +25,8 @@ const CardBaptis = ({ style, batas, showControl = false }) => {
 	const dataQuery = useQuery({
 		queryKey: ["baptisList"],
 		queryFn: async () => {
-			const queryRef = query(baptisCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
+			// const queryRef = query(baptisCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
+			const queryRef = query(baptisCol, orderBy("tanggal"), startAt(tanggal));
 			const querySnap = await getDocs(queryRef);
 			let temp = [];
 			querySnap.forEach((v) => {

@@ -26,7 +26,8 @@ const NikahCard = ({ style, showControl = false }) => {
 	const dataQuery = useQuery({
 		queryKey: ["nikahList"],
 		queryFn: async () => {
-			const queryRef = query(nikahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
+			// const queryRef = query(nikahCol, orderBy("tanggal"), startAt(tanggal), endAt(getYearMonthDay(addWeeks(new Date(), 1))));
+			const queryRef = query(nikahCol, orderBy("tanggal"), startAt(tanggal));
 			const querySnap = await getDocs(queryRef);
 			let temp = [];
 			querySnap.forEach((v) => temp.push({ ...v.data(), id: v?.id }));
