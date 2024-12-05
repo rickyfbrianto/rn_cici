@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ToastAndroid } from "react-native";
 import React, { useState } from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../../../constants/Colors";
 import { Hari } from "../../../../constants/Constant";
 import CustomKeyboard from "../../../../components/CustomKeyboard";
@@ -156,6 +156,13 @@ const BaptisEdit = () => {
 						</View>
 						<Controller control={control} name="lokasi" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput style={{ fontSize: hp(2), flex: 1 }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder="Lokasi" placeholderTextColor={"gray"} />} />
 						{errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
+					</View>
+					<View style={{ flexDirection: "row", borderWidth: errors.kapasitas ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+						<View style={{ width: wp(10), alignItems: "center" }}>
+							<MaterialCommunityIcons name="seat" size={24} color="gray" />
+						</View>
+						<Controller control={control} name="kapasitas" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput style={{ fontSize: hp(2), flex: 1 }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder="kapasitas" placeholderTextColor={"gray"} />} />
+						{errors?.kapasitas && <FontAwesome name="exclamation" size={24} color="red" />}
 					</View>
 
 					<View style={{ marginTop: hp(2) }}>

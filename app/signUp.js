@@ -8,8 +8,11 @@ import CustomKeyboard from '../components/CustomKeyboard';
 import { useAuth } from '../context/authContext';
 import { COLORS } from '../constants/Colors';
 import { useForm, Controller } from 'react-hook-form';
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 const SignUp = () => {
+    const [verify, setVerify] = useState(true)
     const router = useRouter()
     const { register } = useAuth()
     const invalidColor = "indianred"
@@ -23,11 +26,21 @@ const SignUp = () => {
     })
 
     const handleRegister = async (data) => {
-        let response = await register(data.email, data.password, data.username)
-
-        if (!response.success) {
-            Alert.alert("Sign Up", response.msg)
+        try {        
+            let response = await register(data.email, data.password, data.username)
+            if (response.success) {
+                Alert.alert("Sign Up", response.msg)
+            }
+        } catch (error) {
+            let msg = error.message
+            if (msg.includes("(auth/invalid-email)")) msg = "Invalid email"
+            if (msg.includes("(auth/email-already-in-use)")) msg = "Email sudah terdaftar"
+            return { success: false, msg }
         }
+        
+        // let response = await register(data.email, data.password, data.username)
+
+        
     }
 
     return (

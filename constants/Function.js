@@ -14,6 +14,22 @@ export const ConvertDataToSection = ({ val, sort = "" }) => {
     return tempData
 }
 
+function convertToMinutes(waktu) {
+    let [jam, menit] = waktu.split(".").map(Number);
+    return jam * 60 + menit;
+}
+
+export function hitungSelisih(waktu1, waktu2, selisih) {
+    let selisihMenit = convertToMinutes(waktu1) - convertToMinutes(waktu2);
+    let jamSelisih = Math.floor(selisihMenit / 60); // jam
+    let menitSelisih = selisihMenit % 60
+
+    const rumusLebih = jamSelisih >= selisih
+    const rumusKurang = jamSelisih < (selisih * -1) || (jamSelisih == (selisih * -1) && menitSelisih == 0)
+    
+    return rumusKurang || rumusLebih
+}	
+
 export function getQueryKey() {
     const queryClient = useQueryClient()
 

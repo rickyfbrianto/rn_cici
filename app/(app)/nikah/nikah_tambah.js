@@ -6,10 +6,11 @@ import { COLORS } from "../../../constants/Colors";
 import { db } from "../../../firebaseConfig";
 import CustomKeyboard from "../../../components/CustomKeyboard";
 import { Hari } from "../../../constants/Constant";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { useForm, Controller } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { hitungSelisih } from "@/Function";
 
 const NikahTambah = () => {
 	const {
@@ -48,6 +49,16 @@ const NikahTambah = () => {
 
 	const handleAdd = async (data) => {
 		try {
+			const dataSnap = await getDocs(query(collection(db, "nikah"), where("tanggal", "==", data.tanggal)));
+			const temp = dataSnap.docs.map(val => ({jam: val.data().jam}))
+			if(temp.length){
+				const inValid = temp.some(val => hitungSelisih(data.jam, val.jam, 2) === false)
+				if(inValid) {
+					ToastAndroid.show("Jadwal pernikahan ada yang berdekatan", ToastAndroid.SHORT)
+					return
+				}
+			}
+			
 			const id_nikah = "NKH-" + Date.now();
 			await setDoc(doc(db, "nikah", id_nikah), data)
 				.then(() => {
@@ -268,6 +279,13 @@ const NikahTambah = () => {
 						</View>
 						<Controller control={control} name="lokasi" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder="Lokasi" placeholderTextColor={"gray"} />} />
 						{errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
+					</View>
+					<View style={{ flexDirection: "row", borderWidth: errors.kapasitas ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+						<View style={{ width: wp(10), alignItems: "center" }}>
+							<MaterialCommunityIcons name="seat" size={24} color="gray" />
+						</View>
+						<Controller control={control} name="kapasitas" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" keyboardType="numeric" placeholder="kapasitas" placeholderTextColor={"gray"} />} />
+						{errors?.kapasitas && <FontAwesome name="exclamation" size={24} color="red" />}
 					</View>
 
 					<View style={{ marginTop: hp(2) }}>

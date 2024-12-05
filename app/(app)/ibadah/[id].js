@@ -86,6 +86,12 @@ const IbadahDetail = () => {
 								</View>
 								<Text style={{ fontSize: hp(1.8) }}>{dataQuery.data.jam}</Text>
 							</View>
+							<View style={{ flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderBottomColor: colorBase, columnGap: hp(2), marginHorizontal: hp(1), paddingHorizontal: hp(1), paddingVertical: hp(1.4) }}>
+								<View style={{ flexDirection: "row", justifyContent: "center", width: 30 }}>
+									<MaterialCommunityIcons name="seat" size={14} color="black" />
+								</View>
+								<Text style={{ fontSize: hp(1.8) }}>{dataQuery.data.kapasitas}</Text>
+							</View>
 
 							{/* WL */}
 							{dataQuery.data.wl[0] && (

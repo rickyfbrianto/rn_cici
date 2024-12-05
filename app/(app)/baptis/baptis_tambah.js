@@ -1,16 +1,17 @@
 import { View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../../../constants/Colors';
 import { Hari } from '../../../constants/Constant';
 import CustomKeyboard from '../../../components/CustomKeyboard';
 import { db } from '../../../firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { Divider } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { hitungSelisih } from '../../../constants/Function';
 
 const BaptisTambah = () => {
     const { control, reset, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
@@ -26,6 +27,16 @@ const BaptisTambah = () => {
 
     const handleAdd = async (data) => {
         try {
+            const dataSnap = await getDocs(query(collection(db, "baptis"), where("tanggal", "==", data.tanggal)));
+			const temp = dataSnap.docs.map(val => ({jam: val.data().jam}))
+			if(temp.length){
+				const inValid = temp.some(val => hitungSelisih(data.jam, val.jam, 2) === false)
+				if(inValid) {
+					ToastAndroid.show("Jadwal baptis ada yang berdekatan", ToastAndroid.SHORT)
+					return
+				}
+			}            
+            
             const id_baptis = "BPT-" + Date.now()
             await setDoc(doc(db, "baptis", id_baptis), data)
                 .then(() => {
@@ -126,6 +137,15 @@ const BaptisTambah = () => {
                         <TextInput style={{ fontSize: hp(2), flex: 1, }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='Lokasi' placeholderTextColor={'gray'} />
                     )} />
                     {errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
+                </View>
+                <View style={{ flexDirection: "row", borderWidth: errors.kapasitas ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+                    <View style={{ width: wp(10), alignItems: "center" }}>
+                        <MaterialCommunityIcons name="seat" size={24} color="gray" />
+                    </View>
+                    <Controller control={control} name='kapasitas' rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => (
+                        <TextInput keyboardType='numeric' style={{ fontSize: hp(2), flex: 1, }} value={value} onBlur={onBlur} onChangeText={val => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder='kapasitas' placeholderTextColor={'gray'} />
+                    )} />
+                    {errors?.kapasitas && <FontAwesome name="exclamation" size={24} color="red" />}
                 </View>
 
                 <View style={{ marginTop: hp(2) }}>

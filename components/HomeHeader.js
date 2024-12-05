@@ -11,12 +11,14 @@ import { Feather, MaterialIcons, EvilIcons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { COLORS } from '../constants/Colors';
 import { getUser } from '../constants/DataQuery'
+import { getAuth } from 'firebase/auth';
 
 const ios = Platform.OS == "ios"
 
 export default HomeHeader = () => {
     const { top } = useSafeAreaInsets()
     const { user, logout } = useAuth()
+    const auth = getAuth()
     const userData = getUser(user?.id)
 
     useFocusEffect(
@@ -57,6 +59,11 @@ export default HomeHeader = () => {
                 <View className="">
                     <Text style={{ fontFamily: "outfit", fontSize: hp(2.2) }} className="font-medium text-white">Shalom,</Text>
                     <Text style={{ fontFamily: "outfit-bold", fontSize: hp(3) }} className="text-white">{userData.data?.username?.toUpperCase()}</Text>
+                    {!auth.currentUser?.emailVerified && (
+                        <View style={{borderRadius:10, backgroundColor:"red", paddingHorizontal:10,}}>
+                            <Text style={{fontSize:10, color:"white"}}>Belum Verified</Text>
+                        </View>
+                    )}
                 </View>
             </View>
         )

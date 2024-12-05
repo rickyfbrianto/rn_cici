@@ -4,7 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import { COLORS } from "../../../constants/Colors";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { router } from "expo-router";
-import { FontAwesome, Feather } from "@expo/vector-icons";
+import { FontAwesome, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -73,6 +73,12 @@ const BaptisDetail = () => {
 									<Feather name="clock" size={24} color="black" />
 								</View>
 								<Text>{dataQuery.data.jam}</Text>
+							</View>
+							<View style={{ flexDirection: "row", alignItems: "center", borderBottomWidth: 2, borderBottomColor: COLORS.PRIMARY, columnGap: hp(2), marginHorizontal: hp(1), paddingHorizontal: hp(1), paddingVertical: hp(2) }}>
+								<View style={{ flexDirection: "row", justifyContent: "center", width: 30 }}>
+									<MaterialCommunityIcons name="seat" size={24} color="black" />
+								</View>
+								<Text>{dataQuery.data.kapasitas} Orang</Text>
 							</View>
 						</View>
 					</View>

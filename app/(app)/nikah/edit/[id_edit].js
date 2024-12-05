@@ -278,6 +278,13 @@ const NikahEdit = () => {
 							<Controller control={control} name="lokasi" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder="Lokasi" placeholderTextColor={"gray"} />} />
 							{errors?.lokasi && <FontAwesome name="exclamation" size={24} color="red" />}
 						</View>
+						<View style={{ flexDirection: "row", borderWidth: errors.kapasitas ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
+							<View style={{ width: wp(10), alignItems: "center" }}>
+								<FontAwesome name="location-arrow" size={24} color="gray" />
+							</View>
+							<Controller control={control} name="kapasitas" rules={{ required: { value: true } }} render={({ field: { onChange, value, onBlur } }) => <TextInput keyboardType="numeric" style={{ flex: 1, fontSize: hp(2) }} value={value} onBlur={onBlur} onChangeText={(val) => onChange(val)} className="flex-1 font-semibold text-neutral-500" placeholder="kapasitas" placeholderTextColor={"gray"} />} />
+							{errors?.kapasitas && <FontAwesome name="exclamation" size={24} color="red" />}
+						</View>
 
 						<View style={{ marginTop: hp(2) }}>
 							{isSubmitting ? (

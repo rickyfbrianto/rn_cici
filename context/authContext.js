@@ -34,8 +34,13 @@ export const AuthContextProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            return { success: true, msg: "Login berhasil" }
+            await signInWithEmailAndPassword(auth, email, password)
+            .then((user)=>{
+                // setIsAuthenticated(true)
+                // setUser(user)
+                // updateUserData(user.uid)
+                return { success: true, msg: "Login berhasil" }
+            })
         } catch (error) {
             let msg = error.message
             if (msg.includes("auth/invalid-credential")) msg = "Email atau password salah"
@@ -45,23 +50,31 @@ export const AuthContextProvider = ({ children }) => {
     }
     const logout = async () => {
         try {
-            await signOut(auth);
-            return { success: true, msg: "Berhasil logout" }
+            await signOut(auth).then(()=>{
+                // setIsAuthenticated(false)
+                // setUser(null)
+                return { success: true, msg: "Berhasil logout" }
+            })
         } catch (error) {
             return { success: true, msg: error?.message }
         }
     }
     const register = async (email, password, username) => {
         try {
-            const respons = await createUserWithEmailAndPassword(auth, email, password)
-
-            await setDoc(doc(db, "users", respons?.user?.uid), {
-                email,
-                username,
-                userId: respons?.user?.uid,
-                level: "user"
+            return await createUserWithEmailAndPassword(auth, email, password)
+            .then(async ({user})=>{
+                setDoc(doc(db, "users", user?.uid), {
+                    email,
+                    username,
+                    userId: user?.uid,
+                    level: "user"
+                }).then(async ()=>{
+                    // setIsAuthenticated(true)
+                    // setUser(user)
+                    // updateUserData(user.uid)
+                    return { success: true, data: respons?.user, msg: "Akun berhasil dibuat, silahkan verifikasi email!" }
+                })
             })
-            return { success: true, data: respons?.user, msg: "Oke" }
         } catch (error) {
             let msg = error.message
             if (msg.includes("(auth/invalid-email)")) msg = "Invalid email"
