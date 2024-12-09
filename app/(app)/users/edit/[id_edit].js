@@ -12,7 +12,7 @@ import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams } from 'expo-router'
-import { getAuth, updatePassword, updateProfile } from 'firebase/auth';
+import { getAuth, sendEmailVerification, updatePassword, updateProfile } from 'firebase/auth';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useAuth } from '../../../../context/authContext';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
@@ -20,6 +20,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 const UserEdit = () => {
     const { id_edit } = useLocalSearchParams()
     const name = "users"
+    const userAuth = getAuth()
     const { user, updateUserData } = useAuth()
     const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
@@ -82,9 +83,8 @@ const UserEdit = () => {
             uploadBytes(storageRef, blob).then(() => {
                 getDownloadURL(storageRef).then(async url => {
                     data.photoURL = url
-                    const auth = getAuth()
                     Promise.all([
-                        await updateProfile(auth.currentUser, {
+                        await updateProfile(userAuth.currentUser, {
                             displayName: data.username,
                             phoneNumber: data.phone,
                             photoURL: url
@@ -103,11 +103,44 @@ const UserEdit = () => {
         }
     }
 
+    const handleRefreshVerifikasi = async () => {
+        setLoading(true)
+        await userAuth.currentUser.reload().then(()=>{
+            setLoading(false)
+        })
+    }
+    
+    const handleVerifikasi = ()=>{
+        try {
+            sendEmailVerification(userAuth.currentUser)
+            Toast.show({ type: 'success', text1: 'Berhasil', text2: `Email verifikasi berhasil dikirim` });
+        } catch (error) {
+            Toast.show({ type: 'error', text1: "Error", text2: error.message });
+        }
+    }
+
     return (
         <CustomKeyboard>
             <View style={{ padding: 20, rowGap: 10 }} >
                 <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">User {dataQuery.data?.username}</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
+                {userAuth.currentUser.emailVerified 
+                    ? <View className='p-2 bg-green-600 rounded'>
+                        <Text className='text-white'>Email berhasil diverifikasi</Text>
+                    </View>
+                    : 
+                    <View className='flex p-2 bg-slate-200 space-y-2'>
+                        <Text>Email belum diverifikasi</Text>
+                        <View className='flex flex-row space-x-2'>
+                            <TouchableOpacity onPress={handleRefreshVerifikasi} className="self-start p-2 bg-gray-400 rounded">
+                                <Text>Refresh</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleVerifikasi} className="self-start p-2 bg-green-400 rounded">
+                                <Text>Kirim Email Verifikasi</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                }
 
                 <View style={{ flexDirection: "row", borderWidth: errors.username ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
                     <View style={{ width: wp(10), alignItems: "center" }}>

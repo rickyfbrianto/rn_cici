@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from 'firebase/auth'
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -36,6 +36,7 @@ export const AuthContextProvider = ({ children }) => {
         try {
             await signInWithEmailAndPassword(auth, email, password)
             .then((user)=>{
+                sendEmailVerification(user)
                 // setIsAuthenticated(true)
                 // setUser(user)
                 // updateUserData(user.uid)
