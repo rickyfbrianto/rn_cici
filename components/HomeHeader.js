@@ -31,7 +31,7 @@ export default HomeHeader = () => {
     const handleLogout = () => {
         setTimeout(async () => await logout(), 500)
     };
-
+    
     const SudahLogin = () => {
         return (
             <View className="flex-row items-center gap-x-4">
@@ -59,7 +59,7 @@ export default HomeHeader = () => {
                 <View className="">
                     <Text style={{ fontFamily: "outfit", fontSize: hp(2.2) }} className="font-medium text-white">Shalom,</Text>
                     <Text style={{ fontFamily: "outfit-bold", fontSize: hp(3) }} className="text-white">{userData.data?.username?.toUpperCase()}</Text>
-                    {!auth.currentUser?.emailVerified && (
+                    {!auth.currentUser?.emailVerified && auth.currentUser?.email !== "admin@gmail.com" && (
                         <View style={{borderRadius:10, backgroundColor:"red", paddingHorizontal:10,}}>
                             <Text style={{fontSize:10, color:"white"}}>Belum Verified</Text>
                         </View>

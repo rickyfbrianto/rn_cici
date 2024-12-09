@@ -124,22 +124,24 @@ const UserEdit = () => {
             <View style={{ padding: 20, rowGap: 10 }} >
                 <Text style={{ fontFamily: "outfit-bold", fontSize: hp(2.4) }} className="font-bold tracking-wider text-neutral-500">User {dataQuery.data?.username}</Text>
                 <Divider style={{ marginVertical: hp(2) }} />
-                {userAuth.currentUser.emailVerified 
-                    ? <View className='p-2 bg-green-600 rounded'>
-                        <Text className='text-white'>Email berhasil diverifikasi</Text>
-                    </View>
-                    : 
-                    <View className='flex p-2 bg-slate-200 space-y-2'>
-                        <Text>Email belum diverifikasi</Text>
-                        <View className='flex flex-row space-x-2'>
-                            <TouchableOpacity onPress={handleRefreshVerifikasi} className="self-start p-2 bg-gray-400 rounded">
-                                <Text>Refresh</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleVerifikasi} className="self-start p-2 bg-green-400 rounded">
-                                <Text>Kirim Email Verifikasi</Text>
-                            </TouchableOpacity>
+                {userAuth.currentUser.email !== "admin@gmail.com" ? 
+                    userAuth.currentUser.emailVerified  
+                        ? <View className='p-2 bg-green-600 rounded'>
+                            <Text className='text-white'>Email berhasil diverifikasi</Text>
                         </View>
-                    </View>
+                        : 
+                        <View className='flex p-2 bg-slate-200 space-y-2'>
+                            <Text>Email belum diverifikasi</Text>
+                            <View className='flex flex-row space-x-2'>
+                                <TouchableOpacity onPress={handleRefreshVerifikasi} className="self-start p-2 bg-gray-400 rounded">
+                                    <Text>Refresh</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleVerifikasi} className="self-start p-2 bg-green-400 rounded">
+                                    <Text>Kirim Email Verifikasi</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    : null
                 }
 
                 <View style={{ flexDirection: "row", borderWidth: errors.username ? 2 : 0, borderColor: "red", height: hp(7), backgroundColor: "white", borderRadius: 15, paddingHorizontal: hp(2), alignItems: "center", columnGap: wp(2) }}>
